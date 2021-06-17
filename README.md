@@ -1,3 +1,3 @@
-# Tanèíky / Tankettes
+# TanÄÃ­ky / Tankettes
 
 
