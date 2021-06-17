@@ -21,7 +21,11 @@ namespace Tankettes.UI
             }
         }
 
-        public string Text { get; set; }
+        public string Text
+        {
+            get => Label.Text;
+            set => Label = new Label(value);
+        }
 
         public event EventHandler EventOnRelease;
 
@@ -57,17 +61,19 @@ namespace Tankettes.UI
         {
             switch (ended)
             {
+                // click pressed
+                case false:
+                    if (State == ButtonState.Hover)
+                    {
+                        State = ButtonState.Pressed;
+                    }
+                    break;
+                // click released
                 case true:
                     if (State == ButtonState.Pressed)
                     {
                         EventOnRelease?.Invoke(this, new EventArgs());
                         SetState();
-                    }
-                    break;
-                case false:
-                    if (State == ButtonState.Hover)
-                    {
-                        State = ButtonState.Pressed;
                     }
                     break;
             }

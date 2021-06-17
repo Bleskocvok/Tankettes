@@ -61,6 +61,13 @@
 /processorParam:TextureFormat=Color
 /build:cannon.png
 
+#begin font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:font.spritefont
+
 #begin tank.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tankettes.UI
 {
-    class Menu : AbstractDrawable, IMenuElement
+    class Menu : AbstractDrawable
     {
         public override IEnumerable<IDrawable> Elements { get => _buttons; }
 

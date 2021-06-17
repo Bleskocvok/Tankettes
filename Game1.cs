@@ -12,6 +12,8 @@ namespace Tankettes
         private SpriteBatch _spriteBatch;
 
         private Dictionary<string, Texture2D> textures = new ();
+        private SpriteFont font;
+
         private UI.Menu _menu = new ();
         private UI.ButtonTexture _buttonTexture = new("button_normal", "button_over", "button_press");
 
@@ -41,6 +43,8 @@ namespace Tankettes
             textures["button_normal"] = Content.Load<Texture2D>("button_normal");
             textures["button_over"] = Content.Load<Texture2D>("button_over");
             textures["button_press"] = Content.Load<Texture2D>("button_press");
+
+            font = Content.Load<SpriteFont>("font");
         }
 
         protected override void Update(GameTime gameTime)
@@ -65,15 +69,31 @@ namespace Tankettes
             base.Update(gameTime);
         }
 
-        private void Draw(IDrawable element)
+        private void Draw(IDrawable obj)
         {
-            if (element.Texture != null)
+            if (obj.Texture != null)
             {
-                _spriteBatch.Draw(textures[element.Texture], element.Rectangle, null, Color.White);
+                _spriteBatch.Draw(textures[obj.Texture], obj.Rectangle, null, Color.White);
             }
-            if (element.Elements != null)
+
+            if (obj.Label != null)
             {
-                foreach (var el in element.Elements)
+                var point = new Vector2(obj.Rectangle.Center.X, obj.Rectangle.Center.Y);
+                _spriteBatch.DrawString(
+                        font,
+                        obj.Label.Text,
+                        point,
+                        new Color(112, 133, 53),
+                        0,
+                        font.MeasureString(obj.Label.Text) / 2,
+                        1,
+                        new SpriteEffects(),
+                        1);
+            }
+
+            if (obj.Elements != null)
+            {
+                foreach (var el in obj.Elements)
                 {
                     Draw(el);
                 }
@@ -87,7 +107,6 @@ namespace Tankettes
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
-            //_spriteBatch.Draw(menuNormal, new Vector2(50, 50), Color.White);
             Draw(_menu);
             _spriteBatch.End();
 

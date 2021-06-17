@@ -9,10 +9,12 @@ namespace Tankettes
 {
     public abstract class AbstractDrawable : IDrawable
     {
-        public virtual string Texture => null;
+        public virtual string Texture { get; protected set; }
 
         public virtual Rectangle Rectangle { get; set; }
 
-        public virtual IEnumerable<IDrawable> Elements => null;
+        public virtual IEnumerable<IDrawable> Elements { get; protected set; }
+
+        public virtual Label Label { get; protected set; }
     }
 }
