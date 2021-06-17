@@ -42,12 +42,13 @@ namespace Tankettes.UI
 
         public void UpdateMouse(Point pos)
         {
+            _mouseOver = Rectangle.Contains(pos);
+
             if (State == ButtonState.Pressed)
             {
                 return;
             }
 
-            _mouseOver = Rectangle.Contains(pos);
             SetState();
         }
         
@@ -74,8 +75,8 @@ namespace Tankettes.UI
                     if (State == ButtonState.Pressed && _mouseOver)
                     {
                         EventOnRelease?.Invoke(this, new EventArgs());
-                        SetState();
                     }
+                    SetState();
                     break;
             }
         }

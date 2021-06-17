@@ -29,7 +29,11 @@ namespace Tankettes
         protected override void Initialize()
         {
             var button = new UI.Button("play", new Rectangle(200, 50, 200, 50), _buttonTexture);
-            button.EventOnRelease += (s, a) => _window.MakeCurrent("second");
+            button.EventOnRelease += (s, a) =>
+            {
+                _window.AddReplace("game", new GameLoop());
+                _window.MakeCurrent("game");
+            };
 
             var exit = new UI.Button("Exit", new Rectangle(200, 200, 200, 50), _buttonTexture);
             exit.EventOnRelease += (s, a) => Exit();
