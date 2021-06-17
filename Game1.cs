@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Tankettes
@@ -14,8 +15,9 @@ namespace Tankettes
         private Dictionary<string, Texture2D> textures = new ();
         private SpriteFont font;
 
-        private UI.Menu _menu = new ();
-        private UI.ButtonTexture _buttonTexture = new("button_normal", "button_over", "button_press");
+        private UI.Window _window = new ();
+        private readonly UI.ButtonTexture _buttonTexture
+                = new("button_normal", "button_over", "button_press");
 
         public Game1()
         {
@@ -26,10 +28,24 @@ namespace Tankettes
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            var button = new UI.Button("ahoj", new Rectangle(50, 50, 200, 50), _buttonTexture);
-            button.EventOnRelease += (_, _) => System.Diagnostics.Debug.WriteLine("ahoj");
-            _menu.Add(button);
+            var button = new UI.Button("play", new Rectangle(200, 50, 200, 50), _buttonTexture);
+            button.EventOnRelease += (s, a) => _window.MakeCurrent("second");
+
+            var exit = new UI.Button("Exit", new Rectangle(200, 200, 200, 50), _buttonTexture);
+            exit.EventOnRelease += (s, a) => Exit();
+
+            var mainMenu = new UI.MenuFrame();
+            mainMenu.Add(button);
+            mainMenu.Add(exit);
+
+            var back = new UI.Button("back", new Rectangle(150, 50, 200, 50), _buttonTexture);
+            back.EventOnRelease += (s, a) => _window.MakeCurrent("main");
+
+            var second = new UI.MenuFrame();
+            second.Add(back);
+
+            _window.Add("main", mainMenu);
+            _window.Add("second", second);
 
             base.Initialize();
         }
@@ -53,17 +69,15 @@ namespace Tankettes
                     || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
             MouseState state = Mouse.GetState();
-            _menu.UpdateMouse(state.Position);
+            _window.UpdateMouse(state.Position);
             if (state.LeftButton == ButtonState.Pressed)
             {
-                _menu.Click();
+                _window.Click();
             }
             if (state.LeftButton == ButtonState.Released)
             {
-                _menu.Click(true);
+                _window.Click(true);
             }
 
             base.Update(gameTime);
@@ -104,10 +118,10 @@ namespace Tankettes
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
-
             _spriteBatch.Begin();
-            Draw(_menu);
+
+            Draw(_window);
+            
             _spriteBatch.End();
 
             base.Draw(gameTime);

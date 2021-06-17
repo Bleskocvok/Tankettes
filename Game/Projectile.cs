@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tankettes
 {
-    // we might want to add more attributes to this Label record
-    // in the future (color, size, etc.)
-    public record Label(string Text);
+    class Projectile
+    {
+    }
 }

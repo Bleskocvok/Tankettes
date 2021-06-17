@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Tankettes.UI
 {
-    interface IMenuElement
+    interface IMenuScreen : IDrawable, IUIElement
     {
-        void UpdateMouse(Point pos);
+        void UpdateControls(KeyboardState keyboard);
 
-        void Click(bool ended = false);
+        void Update(GameTime gameTime);
     }
 }

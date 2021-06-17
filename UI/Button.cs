@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tankettes.UI
 {
-    public class Button : AbstractDrawable, IMenuElement
+    public class Button : AbstractDrawable, IUIElement
     {
         public ButtonState State { get; private set; }
 
@@ -29,7 +29,7 @@ namespace Tankettes.UI
 
         public event EventHandler EventOnRelease;
 
-        private ButtonTexture _texture;
+        private readonly ButtonTexture _texture;
 
         private bool _mouseOver = false;
 
@@ -68,9 +68,10 @@ namespace Tankettes.UI
                         State = ButtonState.Pressed;
                     }
                     break;
+
                 // click released
                 case true:
-                    if (State == ButtonState.Pressed)
+                    if (State == ButtonState.Pressed && _mouseOver)
                     {
                         EventOnRelease?.Invoke(this, new EventArgs());
                         SetState();
