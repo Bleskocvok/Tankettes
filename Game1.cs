@@ -85,19 +85,24 @@ namespace Tankettes
                 _window.Click(true);
             }
 
+            _window.Update(gameTime);
+
             base.Update(gameTime);
         }
 
-        private void Draw(IDrawable obj)
+        private void Draw(IDrawable obj, Point origin)
         {
+            Rectangle rect = new(obj.Rectangle.Location + origin,
+                                 obj.Rectangle.Size);
+
             if (obj.Texture != null)
             {
-                _spriteBatch.Draw(textures[obj.Texture], obj.Rectangle, null, obj.Color);
+                _spriteBatch.Draw(textures[obj.Texture], rect, null, obj.Color);
             }
 
             if (obj.Label != null)
             {
-                var point = new Vector2(obj.Rectangle.Center.X, obj.Rectangle.Center.Y);
+                var point = new Vector2(rect.Center.X, rect.Center.Y);
                 _spriteBatch.DrawString(
                         font,
                         obj.Label.Text,
@@ -112,9 +117,11 @@ namespace Tankettes
 
             if (obj.Elements != null)
             {
+                var moved = rect.Location;
+
                 foreach (var el in obj.Elements)
                 {
-                    Draw(el);
+                    Draw(el, moved);
                 }
             }
         }
@@ -125,7 +132,7 @@ namespace Tankettes
 
             _spriteBatch.Begin();
 
-            Draw(_window);
+            Draw(_window, Point.Zero);
             
             _spriteBatch.End();
 

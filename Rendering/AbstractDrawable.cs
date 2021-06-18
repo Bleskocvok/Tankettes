@@ -13,7 +13,11 @@ namespace Tankettes
 
         public virtual Rectangle Rectangle { get; set; }
 
-        public virtual IEnumerable<IDrawable> Elements { get; protected set; } = null;
+        public virtual IEnumerable<IDrawable> Elements
+        {
+            get;
+            protected set;
+        } = null;
 
         public virtual Label Label { get; protected set; } = null;
 

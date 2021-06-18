@@ -11,7 +11,10 @@ namespace Tankettes
 {
     class GameLoop : AbstractDrawable, UI.IMenuScreen
     {
-        private Terrain _terrain = new (new Rectangle(), 0, 0, 0);
+        private Terrain _terrain = new(
+                "terrain",
+                new Rectangle(0, 100, 600, 100),
+                0, 4, 60, 2);
 
         public override IEnumerable<IDrawable> Elements => _terrain.Elements;
 
