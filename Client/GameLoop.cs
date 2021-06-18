@@ -11,20 +11,21 @@ namespace Tankettes
 {
     class GameLoop : AbstractDrawable, UI.IMenuScreen
     {
-        private Terrain _terrain = new(
-                "terrain",
-                new Rectangle(0, 100, 600, 100),
-                0, 4, 60, 2);
+        private Terrain _terrain;
 
         public override IEnumerable<IDrawable> Elements => _terrain.Elements;
 
-        public GameLoop()
+        public bool Quit { get; private set; }
+
+        public GameLoop(Terrain terrain)
         {
-            // TODO
+            _terrain = terrain;
         }
 
         public void UpdateControls(KeyboardState keyboard)
         {
+            if (keyboard.IsKeyDown(Keys.Escape))
+                Quit = true;
         }
 
         public void Update(GameTime gameTime)

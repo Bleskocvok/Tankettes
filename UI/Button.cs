@@ -21,8 +21,6 @@ namespace Tankettes.UI
             }
         }
 
-        public override IEnumerable<IDrawable> Elements { get => new List<IDrawable> { new Sprite("terrain", new Rectangle(0, 0, 80, 80)) }; protected set => base.Elements = value; }
-
         public string Text
         {
             get => Label.Text;

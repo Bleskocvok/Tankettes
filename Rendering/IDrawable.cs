@@ -18,5 +18,7 @@ namespace Tankettes
         public IEnumerable<IDrawable> Elements { get; }
 
         public Label Label { get; }
+
+        public decimal Angle { get; set; }
     }
 }

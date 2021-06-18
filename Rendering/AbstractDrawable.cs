@@ -22,5 +22,7 @@ namespace Tankettes
         public virtual Label Label { get; protected set; } = null;
 
         public virtual Color Color { get; set; } = Color.White;
+
+        public virtual decimal Angle { get; set; } = 0;
     }
 }

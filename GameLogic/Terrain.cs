@@ -24,9 +24,6 @@ namespace Tankettes
             Rectangle = rectangle;
             _blockSize = blockSize;
 
-            System.Diagnostics.Debug.WriteLine(Rectangle.Location.X);
-            System.Diagnostics.Debug.WriteLine(Rectangle.Location.Y);
-
             GenerateHeights(seed, amplitude, roughness);
             RecalculateSprites();
         }
@@ -80,8 +77,8 @@ namespace Tankettes
                     .Range(0, count)
                     // sum all lists
                     .Select(i => lists.Select(list => list.ElementAt(i)).Sum())
-                    // elevate the result so that it doesn't contain too
-                    // many negative numbers
+                    // elevate the result so that it doesn't contain any
+                    // negative values
                     .Select(v =>
                         Math.Clamp(v + Rectangle.Height / 2,
                             Rectangle.Height / 10,

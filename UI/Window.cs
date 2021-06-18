@@ -17,6 +17,8 @@ namespace Tankettes.UI
 
         public override IEnumerable<IDrawable> Elements => Current.Elements;
 
+        public bool Quit { get; set; }
+
         private Dictionary<string, IMenuScreen> _menuScreens = new ();
         private string _current;
 
