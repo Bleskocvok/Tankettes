@@ -11,6 +11,8 @@ namespace Tankettes
     {
         public string Texture { get; }
 
+        public Color Color { get; }
+
         public Rectangle Rectangle { get; set; }
 
         public IEnumerable<IDrawable> Elements { get; }

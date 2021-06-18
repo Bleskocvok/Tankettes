@@ -16,5 +16,7 @@ namespace Tankettes
         public virtual IEnumerable<IDrawable> Elements { get; protected set; } = null;
 
         public virtual Label Label { get; protected set; } = null;
+
+        public virtual Color Color { get; set; } = Color.White;
     }
 }

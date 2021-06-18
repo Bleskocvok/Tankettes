@@ -63,6 +63,7 @@ namespace Tankettes
             textures["button_normal"] = Content.Load<Texture2D>("button_normal");
             textures["button_over"] = Content.Load<Texture2D>("button_over");
             textures["button_press"] = Content.Load<Texture2D>("button_press");
+            textures["terrain"] = Content.Load<Texture2D>("terrain");
 
             font = Content.Load<SpriteFont>("font");
         }
@@ -91,7 +92,7 @@ namespace Tankettes
         {
             if (obj.Texture != null)
             {
-                _spriteBatch.Draw(textures[obj.Texture], obj.Rectangle, null, Color.White);
+                _spriteBatch.Draw(textures[obj.Texture], obj.Rectangle, null, obj.Color);
             }
 
             if (obj.Label != null)
