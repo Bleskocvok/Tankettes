@@ -11,27 +11,84 @@ namespace Tankettes.GameLogic
     {
         public Terrain Terrain { get; set; }
 
+        public Rectangle Rectangle { get; set; }
+
         public decimal Wind { get; set; }
 
-        public List<Player> Players;
+        public Player CurrentPlayer { get => Players[_current]; }
 
-        private List<IProjectile> _projectiles = new();
+        public List<Player> Players { get; init; }
 
         private int _current = 0;
 
-        public State() { }
+        private List<IProjectile> _projectiles = new();
 
-        public State(int seed) { }
+        private Random _random;
 
+        public State()
+        {
+            // TODO
+            /*// use random seed
+            _random = new Random();*/
+        }
+
+        public State(int seed,
+                     List<Player> players,
+                     Rectangle rectangle,
+                     string tankTexture,
+                     string cannonTexture,
+                     string terrainTexture,
+                     int terrainBlockSize)
+        {
+            _random = new Random(seed);
+            Rectangle = rectangle;
+            Players = players;
+
+            var terrainSeed = _random.Next();
+            var amplitude = (decimal)(_random.NextDouble()
+                                    * rectangle.Height * 0.4);
+            int roughness = _random.Next(1, 2);
+            Terrain = new(terrainTexture,
+                          rectangle,
+                          terrainSeed,
+                          terrainBlockSize,
+                          amplitude,
+                          roughness);
+
+            InitializeTanks(tankTexture, cannonTexture);
+        }
+
+        private void InitializeTanks(string tankTexture, string cannonTexture)
+        {
+            var size = Rectangle.Height / 10;
+
+            foreach (var pl in Players)
+            {
+                int x = _random.Next(Rectangle.Left, Rectangle.Right);
+                int y = (int)Terrain.Height(x + size / 2);
+
+                pl.Tank = new Tank(tankTexture,
+                                   cannonTexture,
+                                   new Rectangle(x, y, size, size),
+                                   pl.TankColor,
+                                   pl.TankHealth);
+            }
+        }
 
         public void NextPlayer()
         {
+            if (IsRoundOver())
+                return;
 
+            _current = (_current + 1) % Players.Count;
+
+            if (!CurrentPlayer.IsAlive())
+                NextPlayer();
         }
 
         public bool IsRoundOver()
         {
-            return false;
+            return Players.Count(p => p.IsAlive()) < 2;
         }
 
         public void Update(decimal delta)

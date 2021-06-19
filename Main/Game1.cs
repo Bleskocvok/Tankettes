@@ -21,6 +21,7 @@ namespace Tankettes
                 = new("button_normal", "button_over", "button_press");
 
         private GameLoop _currentGame = null;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -42,7 +43,7 @@ namespace Tankettes
                 var terrain = new GameLogic.Terrain("terrain",
                                           new Rectangle(0, 100, 1200, 600),
                                           0, 4, 120, 1);
-                _currentGame = new GameLoop(terrain);
+                _currentGame = new GameLoop("tank", "cannon", "terrain");
                 _window.AddReplace("game", _currentGame);
                 _window.MakeCurrent("game");
             };
@@ -74,7 +75,9 @@ namespace Tankettes
 
             var toLoad = new string[]
             {
-                "button_normal", "button_over", "button_press", "terrain"
+                "button_normal", "button_over", "button_press",
+                "terrain",
+                "tank", "cannon",
             };
 
             foreach (var name in toLoad)
@@ -145,13 +148,13 @@ namespace Tankettes
 
                 _spriteBatch.Draw(
                     _textures[obj.Texture], // 🡸 texture
-                    rect,                   // 🡸 dest rectangle
+                    rect,                   // 🡸 destination rectangle
                     null,                   // 🡸 source rectangle
                     obj.Color,              // 🡸 how to color the texture
                     angle,                  // 🡸 rotation angle
                     Vector2.Zero,           // 🡸 rotation origin
                     SpriteEffects.None,     // 🡸 some dumb sprite effects
-                    1);                     // 🡸 some dumb layer depth
+                    1);                     // 🡸 some dumb layer depth thing
 
                 rect.Offset(-correction);
             }
@@ -159,17 +162,18 @@ namespace Tankettes
             if (obj.Label != null)
             {
                 _spriteBatch.DrawString(
-                        font,                           // 🡸 the font to use
-                        obj.Label.Text,                 // 🡸 string to draw
-                        rect.Center.ToVector2(),        // 🡸 origin
-                        new Color(112, 133, 53),        // 🡸 color
+                        font,                       // 🡸 the font to use
+                        obj.Label.Text,             // 🡸 string to draw
+                        rect.Center.ToVector2(),    // 🡸 origin
+                        new Color(112, 133, 53),    // 🡸 color
                         0,
-                                                        // 🡿 offset to origin
-                                                        // so that it's centered
+                                                    // 🡿 offset to origin
+                                                    // so that it's centered
                         font.MeasureString(obj.Label.Text) / 2,
-                        1,                              // 🡸 scale
-                        SpriteEffects.None,             // 🡸 useless
-                        1);                             // 🡸 some dumb layer depth thing
+                        1,                          // 🡸 scale, TODO
+                        SpriteEffects.None,         // 🡸 useless
+                        1);                         // 🡸 some dumb layer
+                                                    // depth thing
             }
 
             if (obj.Elements != null)

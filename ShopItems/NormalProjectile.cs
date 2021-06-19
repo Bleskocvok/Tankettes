@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tankettes.GameLogic;
 
-namespace Tankettes.ShopItems
+namespace Tankettes.Shop
 {
     public class NormalProjectile : GameLogic.AbstractProjectile
     {
@@ -18,6 +18,8 @@ namespace Tankettes.ShopItems
         {
             projectiles.Add(new NormalProjectile(pos, vec));
         }
+
+        public NormalProjectile() { }
 
         public NormalProjectile(Point pos, Vector2 vec)
         {

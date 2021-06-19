@@ -38,7 +38,9 @@ namespace Tankettes.GameLogic
 
             decimal between = (x - idx * _blockSize) / (decimal)_blockSize;
 
-            return h1 * (1 - between) + h2 * between;
+            decimal value = h1 * (1 - between) + h2 * between;
+
+            return Rectangle.Bottom - value;
         }
 
 

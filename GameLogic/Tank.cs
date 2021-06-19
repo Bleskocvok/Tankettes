@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tankettes.GameLogic
 {
-    class Tank : AbstractDrawable
+    public class Tank : AbstractDrawable
     {
         public decimal CannonAngle
         {
@@ -17,7 +17,7 @@ namespace Tankettes.GameLogic
 
         public int Health { get; set; }
 
-        private Sprite _cannon;
+        private readonly Sprite _cannon;
 
         public Tank(string tank,
                     string cannon,
@@ -25,20 +25,21 @@ namespace Tankettes.GameLogic
                     Color color,
                     int startHealth)
         {
-            Texture = tank;
-            Rectangle = rectangle;
-            Color = color;
+            base.Texture = new string(tank);
+            base.Rectangle = rectangle;
+            base.Color = color;
             Health = startHealth;
             _cannon = new Sprite(cannon,
                     new Rectangle(Point.Zero, Rectangle.Size));
-            Elements = new List<IDrawable> { _cannon };
+            base.Elements = new List<IDrawable> { _cannon };
             CannonAngle = 0;
         }
 
-        public override IEnumerable<IDrawable> Elements
+        public void Update(State state, decimal delta)
         {
-            get => base.Elements;
-            protected set => base.Elements = value;
+            // TODO
         }
+
+        public bool IsDestroyed() => Health <= 0;
     }
 }
