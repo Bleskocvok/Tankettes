@@ -12,9 +12,9 @@ namespace Tankettes.UI
     {
         public override IEnumerable<IDrawable> Elements { get => _elements; }
 
-        private List<IUIElement> _elements = new();
+        private readonly List<IElementUI> _elements = new();
 
-        public void Add(IUIElement elem) => _elements.Add(elem);
+        public void Add(IElementUI elem) => _elements.Add(elem);
 
         public void UpdateMouse(Point pos)
         {

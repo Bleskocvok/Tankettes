@@ -13,10 +13,10 @@ namespace Tankettes
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Dictionary<string, Texture2D> textures = new ();
+        private Dictionary<string, Texture2D> _textures = new();
         private SpriteFont font;
 
-        private UI.Window _window = new ();
+        private UI.Window _window = new();
         private readonly UI.ButtonTexture _buttonTexture
                 = new("button_normal", "button_over", "button_press");
 
@@ -32,12 +32,16 @@ namespace Tankettes
 
         protected override void Initialize()
         {
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferHeight = 720;
+            _graphics.ApplyChanges();
+
             var button = new UI.Button("play", new Rectangle(0, 0, 200, 50), _buttonTexture);
             button.EventOnRelease += (s, a) =>
             {
-                var terrain = new Terrain("terrain",
-                                          new Rectangle(0, 100, 600, 100),
-                                          0, 4, 60, 2);
+                var terrain = new GameLogic.Terrain("terrain",
+                                          new Rectangle(0, 100, 1200, 600),
+                                          0, 4, 120, 1);
                 _currentGame = new GameLoop(terrain);
                 _window.AddReplace("game", _currentGame);
                 _window.MakeCurrent("game");
@@ -68,10 +72,15 @@ namespace Tankettes
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            textures["button_normal"] = Content.Load<Texture2D>("button_normal");
-            textures["button_over"] = Content.Load<Texture2D>("button_over");
-            textures["button_press"] = Content.Load<Texture2D>("button_press");
-            textures["terrain"] = Content.Load<Texture2D>("terrain");
+            var toLoad = new string[]
+            {
+                "button_normal", "button_over", "button_press", "terrain"
+            };
+
+            foreach (var name in toLoad)
+            {
+                _textures[name] = Content.Load<Texture2D>(name);
+            }
 
             font = Content.Load<SpriteFont>("font");
         }
@@ -80,7 +89,8 @@ namespace Tankettes
         {
             var keyboard = Keyboard.GetState();
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            if (GamePad.GetState(PlayerIndex.One)
+                    .Buttons.Back == ButtonState.Pressed)
                 Exit();
 
             if (_window.Current != _currentGame
@@ -134,7 +144,7 @@ namespace Tankettes
                 rect.Offset(correction);
 
                 _spriteBatch.Draw(
-                    textures[obj.Texture],  // 🡸 texture
+                    _textures[obj.Texture], // 🡸 texture
                     rect,                   // 🡸 dest rectangle
                     null,                   // 🡸 source rectangle
                     obj.Color,              // 🡸 how to color the texture
@@ -149,15 +159,17 @@ namespace Tankettes
             if (obj.Label != null)
             {
                 _spriteBatch.DrawString(
-                        font,
-                        obj.Label.Text,
-                        rect.Center.ToVector2(),
-                        new Color(112, 133, 53),
+                        font,                           // 🡸 the font to use
+                        obj.Label.Text,                 // 🡸 string to draw
+                        rect.Center.ToVector2(),        // 🡸 origin
+                        new Color(112, 133, 53),        // 🡸 color
                         0,
+                                                        // 🡿 offset to origin
+                                                        // so that it's centered
                         font.MeasureString(obj.Label.Text) / 2,
-                        1,
-                        SpriteEffects.None,
-                        1);
+                        1,                              // 🡸 scale
+                        SpriteEffects.None,             // 🡸 useless
+                        1);                             // 🡸 some dumb layer depth thing
             }
 
             if (obj.Elements != null)

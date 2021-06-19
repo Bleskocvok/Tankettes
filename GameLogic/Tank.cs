@@ -5,16 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tankettes
+namespace Tankettes.GameLogic
 {
     class Tank : AbstractDrawable
     {
-        public float CannonAngle
+        public decimal CannonAngle
         {
-            // TODO
-            get;
-            set;
-        } = 0;
+            get => _cannon.Angle;
+            set => _cannon.Angle = Math.Clamp(value, 0, 180);
+        }
 
         public int Health { get; set; }
 
@@ -32,6 +31,8 @@ namespace Tankettes
             Health = startHealth;
             _cannon = new Sprite(cannon,
                     new Rectangle(Point.Zero, Rectangle.Size));
+            Elements = new List<IDrawable> { _cannon };
+            CannonAngle = 0;
         }
 
         public override IEnumerable<IDrawable> Elements

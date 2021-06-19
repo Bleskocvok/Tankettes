@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tankettes
+namespace Tankettes.GameLogic
 {
-    class Terrain : AbstractDrawable
+    public class Terrain : AbstractDrawable
     {
         private List<decimal> _heights = new();
 

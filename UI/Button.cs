@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tankettes.UI
 {
-    public class Button : AbstractDrawable, IUIElement
+    public class Button : AbstractDrawable, IElementUI
     {
         public ButtonState State { get; private set; }
 

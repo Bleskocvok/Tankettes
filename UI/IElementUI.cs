@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tankettes.UI
 {
-    interface IUIElement : IDrawable
+    interface IElementUI : IDrawable
     {
         void UpdateMouse(Point pos);
 

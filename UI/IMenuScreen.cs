@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Tankettes.UI
 {
-    interface IMenuScreen : IDrawable, IUIElement
+    interface IMenuScreen : IDrawable, IElementUI
     {
         void UpdateControls(KeyboardState keyboard);
 

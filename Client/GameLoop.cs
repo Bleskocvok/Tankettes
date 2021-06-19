@@ -11,13 +11,15 @@ namespace Tankettes
 {
     class GameLoop : AbstractDrawable, UI.IMenuScreen
     {
-        private Terrain _terrain;
+        private GameLogic.Terrain _terrain;
+
+        private UI.MenuFrame _ui;
 
         public override IEnumerable<IDrawable> Elements => _terrain.Elements;
 
         public bool Quit { get; private set; }
 
-        public GameLoop(Terrain terrain)
+        public GameLoop(GameLogic.Terrain terrain)
         {
             _terrain = terrain;
         }
