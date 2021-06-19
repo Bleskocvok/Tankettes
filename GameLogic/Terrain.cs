@@ -7,6 +7,9 @@ namespace Tankettes.GameLogic
 {
     public class Terrain : AbstractDrawable
     {
+        private const int DefaultBlurAmount = 100;
+        private const decimal Delta = 10M;
+
         private List<decimal> _heights = new();
 
         private readonly int _blockSize;
@@ -28,10 +31,20 @@ namespace Tankettes.GameLogic
             RecalculateSprites();
         }
 
+        public decimal Steepness(decimal x)
+        {
+            float h1 = (float)Height(x);
+            float h2 = (float)Height(x + Delta);
+            var toDeg = (decimal)(180f * MathF.PI);
+            return toDeg * (decimal)MathF.Atan2(h2 - h1, (float)Delta);
+        }
+
         public decimal Height(decimal x)
         {
-            int idx = (int)Math.Floor(x / (decimal)_blockSize);
-            int next = Math.Min(idx + 1, _heights.Count - 1);
+            int Clamp(int idx) => Math.Clamp(idx, 0, _heights.Count - 1);
+
+            int idx = Clamp((int)Math.Floor(x / (decimal)_blockSize));
+            int next = Clamp(idx + 1);
 
             decimal h1 = _heights[idx];
             decimal h2 = _heights[next];
@@ -57,7 +70,7 @@ namespace Tankettes.GameLogic
             var seedGen = new Random(seed);
 
             int count = Rectangle.Width / _blockSize;
-            int blur = 4;
+            int blur = DefaultBlurAmount;
 
             var lists = new List<decimal>[roughness];
 

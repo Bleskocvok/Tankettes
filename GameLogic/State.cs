@@ -47,7 +47,7 @@ namespace Tankettes.GameLogic
             var terrainSeed = _random.Next();
             var amplitude = (decimal)(_random.NextDouble()
                                     * rectangle.Height * 0.4);
-            int roughness = _random.Next(1, 2);
+            int roughness = _random.Next(1, 5);
             Terrain = new(terrainTexture,
                           rectangle,
                           terrainSeed,
@@ -65,7 +65,7 @@ namespace Tankettes.GameLogic
             foreach (var pl in Players)
             {
                 int x = _random.Next(Rectangle.Left, Rectangle.Right);
-                int y = (int)Terrain.Height(x + size / 2);
+                int y = (int)Terrain.Height(x + size / 2) - size;
 
                 pl.Tank = new Tank(tankTexture,
                                    cannonTexture,
@@ -103,6 +103,16 @@ namespace Tankettes.GameLogic
             _projectiles = _projectiles
                 .Where(p => !p.IsDestroyed())
                 .ToList();
+
+            // update tanks
+            var tanks = Players
+                .Where(p => p != null)
+                .Select(p => p.Tank);
+
+            foreach (var tank in tanks)
+            {
+                tank.Update(this, delta);
+            }
         }
 
         public void Explode(Point pos, float radius)
@@ -111,6 +121,9 @@ namespace Tankettes.GameLogic
             // TODO: add a particle effect
         }
 
-        public bool IsEquilibrium() => _projectiles.Count == 0;
+        public bool IsEquilibrium()
+        {
+            return _projectiles.Count == 0;
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace Tankettes
         }
 
         private const int BlockSize = 4;
-        private const decimal PhysicsDelta = 0.02M;     // 50fps
+        private const int PhysicsDelta = 20;     // 50fps
 
         private decimal _accumulated = 0;
 
@@ -42,7 +42,7 @@ namespace Tankettes
 
 
             _gameState = new GameLogic.State(
-                    0,
+                    new Random().Next(),
                     new List<GameLogic.Player>
                     {
                         new GameLogic.Player("A", 1000, Color.Green, new AmmoCapacity(normal, 99)),
@@ -61,11 +61,20 @@ namespace Tankettes
         {
             if (keyboard.IsKeyDown(Keys.Escape))
                 Quit = true;
+
+            if (keyboard.IsKeyDown(Keys.D))
+            {
+                _gameState.Players[0].Tank.Move(10, 0);
+            }
+            if (keyboard.IsKeyDown(Keys.A))
+            {
+                _gameState.Players[0].Tank.Move(-10, 0);
+            }
         }
 
         public void Update(GameTime gameTime)
         {
-            _accumulated += (decimal)gameTime.ElapsedGameTime.TotalMilliseconds;
+            _accumulated += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             for (; _accumulated >= PhysicsDelta; _accumulated -= PhysicsDelta)
             {
