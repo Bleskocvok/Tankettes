@@ -25,7 +25,9 @@ namespace Tankettes.GameLogic
 
         public List<AmmoCapacity> Ammo { get; set; } = new();
 
-        public int Selected { get; set; } = 0;
+        public AmmoCapacity SelectedAmmo => Ammo[_selected];
+
+        private int _selected = 0;
 
         public Tank Tank { get; set; } = null;
 
@@ -42,6 +44,16 @@ namespace Tankettes.GameLogic
             Money = money;
             TankColor = color;
             Ammo.Add(defaultAmmo);
+        }
+
+        public void NextAmmo() => _selected = (_selected + 1) % Ammo.Count;
+
+        public void PrevAmmo()
+        {
+            _selected -= 1;
+
+            if (_selected < 0)
+                _selected += Ammo.Count;
         }
     }
 }

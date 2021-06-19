@@ -77,6 +77,11 @@ namespace Tankettes.GameLogic
             }
         }
 
+        public void Shoot()
+        {
+            CurrentPlayer.SelectedAmmo;
+        }
+
         public void NextPlayer()
         {
             if (IsRoundOver())

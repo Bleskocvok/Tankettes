@@ -14,10 +14,9 @@ namespace Tankettes
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Dictionary<string, Texture2D> _textures = new();
-        private SpriteFont font;
+        private Renderer _renderer;
 
-        private UI.Window _window = new();
+        private readonly UI.Window _window = new();
         private readonly UI.ButtonTexture _buttonTexture
                 = new("button_normal", "button_over", "button_press");
 
@@ -94,6 +93,12 @@ namespace Tankettes
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+             _renderer = new Renderer
+             {
+                 Graphics = _graphics,
+                 SpriteBatch = _spriteBatch,
+             };
+
             var toLoad = new string[]
             {
                 "button_normal", "button_over", "button_press",
@@ -101,12 +106,7 @@ namespace Tankettes
                 "tank", "cannon",
             };
 
-            foreach (var name in toLoad)
-            {
-                _textures[name] = Content.Load<Texture2D>(name);
-            }
-
-            font = Content.Load<SpriteFont>("font");
+            _renderer.LoadAssets(Content, "font", toLoad);
         }
 
         protected override void Update(GameTime gameTime)
@@ -147,74 +147,13 @@ namespace Tankettes
             _prevKeyboard = keyboard;
         }
 
-        private void Draw(IDrawable obj, Point origin)
-        {
-            Rectangle rect = new(obj.Rectangle.Location + origin,
-                                 obj.Rectangle.Size);
-
-            if (obj.Texture != null)
-            {
-                float angle = obj.Angle * MathF.PI / 180;
-
-                float sin = MathF.Sin(angle);
-                float cos = MathF.Cos(angle);
-
-                float x = rect.Width / 2;
-                float y = rect.Height / 2;
-
-                var correction = new Vector2(x - (x * cos - y * sin),
-                                             y - (x * sin + y * cos));
-
-                rect.Offset(correction);
-
-                _spriteBatch.Draw(
-                    _textures[obj.Texture], // 🡸 texture
-                    rect,                   // 🡸 destination rectangle
-                    null,                   // 🡸 source rectangle
-                    obj.Color,              // 🡸 how to color the texture
-                    angle,                  // 🡸 rotation angle
-                    Vector2.Zero,           // 🡸 rotation origin
-                    SpriteEffects.None,     // 🡸 some dumb sprite effects
-                    1);                     // 🡸 some dumb layer depth thing
-
-                rect.Offset(-correction);
-            }
-
-            if (obj.Label != null)
-            {
-                _spriteBatch.DrawString(
-                        font,                       // 🡸 the font to use
-                        obj.Label.Text,             // 🡸 string to draw
-                        rect.Center.ToVector2(),    // 🡸 origin
-                        new Color(112, 133, 53),    // 🡸 color
-                        0,
-                                                    // 🡿 offset to origin
-                                                    // so that it's centered
-                        font.MeasureString(obj.Label.Text) / 2,
-                        1,                          // 🡸 scale, TODO
-                        SpriteEffects.None,         // 🡸 useless
-                        1);                         // 🡸 some dumb layer
-                                                    // depth thing
-            }
-
-            if (obj.Elements != null)
-            {
-                var moved = origin + obj.Rectangle.Location;
-
-                foreach (var el in obj.Elements)
-                {
-                    Draw(el, moved);
-                }
-            }
-        }
-
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
 
-            Draw(_window, Point.Zero);
+            _renderer.Draw(_window, Point.Zero);
             
             _spriteBatch.End();
 

@@ -11,6 +11,12 @@ namespace Tankettes
 {
     class GameLoop : AbstractDrawable, UI.IMenuScreen
     {
+        private const int TankSpeed = 1;
+        private const float CannonAngleSpeed = 1;
+
+
+        private KeyboardState _previous = Keyboard.GetState();
+
         public override IEnumerable<IDrawable> Elements
         {
             get
@@ -41,14 +47,25 @@ namespace Tankettes
             if (keyboard.IsKeyDown(Keys.Escape))
                 Quit = true;
 
+            var playerTank = _gameState.CurrentPlayer.Tank;
+
             if (keyboard.IsKeyDown(Keys.D))
-            {
-                _gameState.Players[0].Tank.Move(1, 0);
-            }
+                playerTank.Move(TankSpeed, 0);
+
             if (keyboard.IsKeyDown(Keys.A))
-            {
-                _gameState.Players[0].Tank.Move(-1, 0);
-            }
+                playerTank.Move(-TankSpeed, 0);
+
+            if (keyboard.IsKeyDown(Keys.Right))
+                playerTank.CannonAngle -= CannonAngleSpeed;
+
+            if (keyboard.IsKeyDown(Keys.Left))
+                playerTank.CannonAngle += CannonAngleSpeed;
+
+            if (_previous.IsKeyDown(Keys.Space)
+                    && keyboard.IsKeyUp(Keys.Space))
+                _gameState.Shoot();
+
+            _previous = keyboard;
         }
 
         public void Update(GameTime gameTime)
