@@ -10,7 +10,9 @@ namespace Tankettes.Shop
 {
     public class NormalProjectile : GameLogic.AbstractProjectile
     {
-        public override float ExplosionRadius => 10f;
+        public override string Texture => "ball";
+
+        public override float ExplosionRadius => 20f;
 
         public override void Shoot(Point pos,
                                    Vector2 vec,
@@ -19,12 +21,11 @@ namespace Tankettes.Shop
             projectiles.Add(new NormalProjectile(pos, vec));
         }
 
-        public NormalProjectile() { }
+        public NormalProjectile()
+            : base() {}
 
         public NormalProjectile(Point pos, Vector2 vec)
-        {
-            Position = pos.ToVector2();
-            Previous = pos.ToVector2() - vec;
-        }
+            : base(pos, vec)
+        {}
     }
 }

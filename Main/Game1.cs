@@ -39,7 +39,7 @@ namespace Tankettes
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.ApplyChanges();
 
-            var button = new UI.Button("play", new Rectangle(0, 0, 200, 50), _buttonTexture);
+            var button = new UI.Button("play", new Rectangle(540, 300, 200, 50), _buttonTexture);
             button.EventOnRelease += (s, a) =>
             {
                 var terrain = new GameLogic.Terrain("terrain",
@@ -68,7 +68,7 @@ namespace Tankettes
                 _window.MakeCurrent("game");
             };
 
-            var exit = new UI.Button("Exit", new Rectangle(100, 200, 200, 50), _buttonTexture);
+            var exit = new UI.Button("Exit", new Rectangle(540, 500, 200, 50), _buttonTexture);
             exit.EventOnRelease += (s, a) => _window.Quit = true;
 
             var mainMenu = new UI.MenuFrame();
@@ -103,7 +103,7 @@ namespace Tankettes
             {
                 "button_normal", "button_over", "button_press",
                 "terrain",
-                "tank", "cannon",
+                "tank", "cannon", "ball",
             };
 
             _renderer.LoadAssets(Content, "font", toLoad);

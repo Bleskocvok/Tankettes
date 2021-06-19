@@ -1,19 +1,30 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Tankettes.GameLogic
 {
-    public class State
+    public class State : AbstractDrawable
     {
         private const float TankRelativeSize = 0.066f;
 
         public Terrain Terrain { get; set; }
 
-        public Rectangle Rectangle { get; set; }
+        public override IEnumerable<IDrawable> Elements
+        {
+            get
+            {
+                var result = Terrain.Elements
+                    .Union(Tanks())
+                    .Union(_projectiles);
+
+                return result;
+            }
+        }
 
         public float Wind { get; set; }
 
@@ -25,7 +36,7 @@ namespace Tankettes.GameLogic
 
         private List<IProjectile> _projectiles = new();
 
-        private Random _random;
+        private readonly Random _random;
 
         public State()
         {
@@ -79,7 +90,18 @@ namespace Tankettes.GameLogic
 
         public void Shoot()
         {
-            CurrentPlayer.SelectedAmmo;
+            var pos = CurrentPlayer.Tank.Rectangle.Center.ToVector2();
+            
+            var angle = -CurrentPlayer.Tank.CannonAngle / 180f * MathF.PI;
+            var vec = new Vector2(MathF.Cos(angle),
+                                  MathF.Sin(angle));
+
+            vec *= (float)CurrentPlayer.Power / (float)Player.MaxPower;
+
+            CurrentPlayer
+                    .SelectedAmmo
+                    .Type
+                    .Shoot(pos.ToPoint(), vec, ref _projectiles);
         }
 
         public void NextPlayer()
@@ -128,9 +150,17 @@ namespace Tankettes.GameLogic
             // TODO: add a particle effect
         }
 
+        private IEnumerable<Tank> Tanks()
+        {
+            return Players
+                .Where(p => p.Tank != null)
+                .Select(p => p.Tank);
+        }
+
         public bool IsEquilibrium()
         {
-            return _projectiles.Count == 0;
+            bool tanksEq = Tanks().All(t => t.IsEquilibrium(this));
+            return tanksEq && _projectiles.Count == 0;
         }
     }
 }

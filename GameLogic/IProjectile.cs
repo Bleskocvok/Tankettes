@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tankettes.GameLogic
 {
-    public interface IProjectile
+    public interface IProjectile : IDrawable
     {
         float ExplosionRadius { get; }
 

@@ -35,7 +35,7 @@ namespace Tankettes.GameLogic
         {
             float h1 = Height(x);
             float h2 = Height(x + Delta);
-            var toDeg = (180f * MathF.PI);
+            var toDeg = 180f * MathF.PI;
             return toDeg * MathF.Atan2(h2 - h1, Delta);
         }
 
@@ -60,6 +60,7 @@ namespace Tankettes.GameLogic
         public void Explode(Point pt, float radius)
         {
 
+            RecalculateSprites();
         }
 
         private void GenerateHeights(int seed,

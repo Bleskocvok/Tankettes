@@ -9,6 +9,7 @@ namespace Tankettes.GameLogic
 {
     public class Player
     {
+        public static int MaxPower = 100;
         private const int DefaultTankHealth = 100;
 
         public record AmmoCapacity(IProjectile Type, int Count);
@@ -20,6 +21,14 @@ namespace Tankettes.GameLogic
         public int Score { get; set; } = 0;
 
         public int TankHealth { get; set; } = DefaultTankHealth;
+
+        private int _power = MaxPower / 2;
+
+        public int Power
+        {
+            get => _power;
+            set => _power = Math.Clamp(value, 0, MaxPower);
+        }
 
         public Color TankColor { get; set; } = Color.White;
 

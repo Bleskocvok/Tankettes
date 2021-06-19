@@ -18,14 +18,7 @@ namespace Tankettes
         private KeyboardState _previous = Keyboard.GetState();
 
         public override IEnumerable<IDrawable> Elements
-        {
-            get
-            {
-                var tanks = _gameState.Players.Select(p => p.Tank);
-                var result = _gameState.Terrain.Elements.Union(tanks);
-                return result;
-            }
-        }
+                => _gameState.Elements;
 
         private const int PhysicsDelta = 20;     // 50fps
 
