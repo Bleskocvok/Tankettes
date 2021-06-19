@@ -41,10 +41,8 @@ namespace Tankettes.GameLogic
 
         public float Height(float x)
         {
-            int Clamp(int idx) => Math.Clamp(idx, 0, _heights.Count - 1);
-
-            int idx = Clamp((int)Math.Floor(x / (float)_blockSize));
-            int next = Clamp(idx + 1);
+            int idx = CoordToIdx(x);
+            int next = ClampIdx(idx + 1);
 
             float h1 = _heights[idx];
             float h2 = _heights[next];
@@ -57,8 +55,28 @@ namespace Tankettes.GameLogic
         }
 
 
+        private int ClampIdx(int idx)
+                => Math.Clamp(idx, 0, _heights.Count - 1);
+
+        private int CoordToIdx(float x)
+                => ClampIdx((int)Math.Floor(x / (float)_blockSize));
+
+        private int IdxToCoord(int i)
+                => i * _blockSize;
+
         public void Explode(Point pt, float radius)
         {
+            int begin = CoordToIdx(pt.X - radius) + 1;
+            int end = CoordToIdx(pt.X + radius) - 1;
+
+            for (int i = begin; i <= end; i++)
+            {
+                float x = IdxToCoord(i);
+                float dx = Math.Abs(x - pt.X);
+                float value = MathF.Sqrt(MathF.Pow(radius, 2) - MathF.Pow(dx, 2));
+                _heights[i] -= value;
+                _heights[i] = Math.Max(0, _heights[i]);
+            }
 
             RecalculateSprites();
         }

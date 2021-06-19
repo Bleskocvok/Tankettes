@@ -65,11 +65,16 @@ namespace Tankettes
 
             if (obj.Label != null)
             {
+                // nice lime green:
+                //     new Color(112, 133, 53);
+                // but white is better
+                var color = Color.White;
+
                 SpriteBatch.DrawString(
                         Font,                       // 🡸 the font to use
                         obj.Label.Text,             // 🡸 string to draw
                         rect.Center.ToVector2(),    // 🡸 origin
-                        new Color(112, 133, 53),    // 🡸 color
+                        color,                      // 🡸 text color
                         0,                          // 🡸 rotation
                                                     // 🡿 offset to origin
                                                     // so that it's centered
