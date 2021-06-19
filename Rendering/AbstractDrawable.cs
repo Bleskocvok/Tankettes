@@ -23,6 +23,6 @@ namespace Tankettes
 
         public virtual Color Color { get; set; } = Color.White;
 
-        public virtual decimal Angle { get; set; } = 0;
+        public virtual float Angle { get; set; } = 0;
     }
 }

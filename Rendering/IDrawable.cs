@@ -19,6 +19,6 @@ namespace Tankettes
 
         public Label Label { get; }
 
-        public decimal Angle { get; set; }
+        public float Angle { get; set; }
     }
 }

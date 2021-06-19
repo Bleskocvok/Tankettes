@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using static Tankettes.GameLogic.Player;
 
 namespace Tankettes
 {
@@ -19,6 +20,8 @@ namespace Tankettes
         private UI.Window _window = new();
         private readonly UI.ButtonTexture _buttonTexture
                 = new("button_normal", "button_over", "button_press");
+
+        private const int BlockSize = 4;
 
         private GameLoop _currentGame = null;
 
@@ -43,7 +46,25 @@ namespace Tankettes
                 var terrain = new GameLogic.Terrain("terrain",
                                           new Rectangle(0, 100, 1200, 600),
                                           0, 4, 120, 1);
-                _currentGame = new GameLoop("tank", "cannon", "terrain");
+
+                var normal = new Shop.NormalProjectile();
+
+                var state = new GameLogic.State(
+                        new Random().Next(),
+                        new List<GameLogic.Player>
+                        {
+                        new GameLogic.Player("A", 1000, Color.Green, new AmmoCapacity(normal, 99)),
+                        new GameLogic.Player("B", 1000, Color.Purple, new AmmoCapacity(normal, 99)),
+                        new GameLogic.Player("C", 1000, Color.Red, new AmmoCapacity(normal, 99)),
+                        },
+                        new Rectangle(0, 0, 1280, 600),
+                        "tank",
+                        "cannon",
+                        "terrain",
+                        BlockSize
+                    );
+
+                _currentGame = new GameLoop(state);
                 _window.AddReplace("game", _currentGame);
                 _window.MakeCurrent("game");
             };
@@ -133,7 +154,7 @@ namespace Tankettes
 
             if (obj.Texture != null)
             {
-                float angle = (float)obj.Angle * (float)Math.PI / 180;
+                float angle = obj.Angle * MathF.PI / 180;
 
                 float sin = MathF.Sin(angle);
                 float cos = MathF.Cos(angle);

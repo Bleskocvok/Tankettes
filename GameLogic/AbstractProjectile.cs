@@ -9,8 +9,8 @@ namespace Tankettes.GameLogic
 {
     public abstract class AbstractProjectile : IProjectile
     {
-        private const decimal Drag = 0.13M;
-        private const decimal Gravity = 0.1M;
+        private const float Drag = 0.13f;
+        private const float Gravity = 0.1f;
 
         public Vector2 Position { get; protected set; }
 
@@ -27,20 +27,20 @@ namespace Tankettes.GameLogic
                         Vector2 vec,
                         ref List<IProjectile> projectiles);
 
-        protected void Advance(decimal delta)
+        protected void Advance(float delta)
         {
             var vec = Position - Previous;
-            var next = Position + vec * (float)(1 - Drag);
-            next.Y += (float)(Gravity * delta * delta);
+            var next = Position + vec * (1 - Drag);
+            next.Y += (Gravity * delta * delta);
             Previous = Position;
             Position = next;
         }
 
-        public void Update(State state, decimal delta)
+        public void Update(State state, float delta)
         {
             Advance(delta);
 
-            if ((decimal)Position.Y >= state.Terrain.Height((decimal)Position.X))
+            if ((float)Position.Y >= state.Terrain.Height((float)Position.X))
             {
                 _destroyed = true;
                 state.Terrain.Explode(Position.ToPoint(), ExplosionRadius);

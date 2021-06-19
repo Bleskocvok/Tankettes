@@ -9,11 +9,13 @@ namespace Tankettes.GameLogic
 {
     public class State
     {
+        private const float TankRelativeSize = 0.066f;
+
         public Terrain Terrain { get; set; }
 
         public Rectangle Rectangle { get; set; }
 
-        public decimal Wind { get; set; }
+        public float Wind { get; set; }
 
         public Player CurrentPlayer { get => Players[_current]; }
 
@@ -45,7 +47,7 @@ namespace Tankettes.GameLogic
             Players = players;
 
             var terrainSeed = _random.Next();
-            var amplitude = (decimal)(_random.NextDouble()
+            var amplitude = (float)(_random.NextDouble()
                                     * rectangle.Height * 0.4);
             int roughness = _random.Next(1, 5);
             Terrain = new(terrainTexture,
@@ -60,7 +62,7 @@ namespace Tankettes.GameLogic
 
         private void InitializeTanks(string tankTexture, string cannonTexture)
         {
-            var size = Rectangle.Height / 10;
+            int size = (int)(Rectangle.Height * TankRelativeSize);
 
             foreach (var pl in Players)
             {
@@ -91,7 +93,7 @@ namespace Tankettes.GameLogic
             return Players.Count(p => p.IsAlive()) < 2;
         }
 
-        public void Update(decimal delta)
+        public void Update(float delta)
         {
             // update projectiles
             foreach (var proj in _projectiles)

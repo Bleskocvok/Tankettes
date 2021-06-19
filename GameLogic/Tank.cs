@@ -10,7 +10,7 @@ namespace Tankettes.GameLogic
 {
     public class Tank : AbstractDrawable
     {
-        public decimal CannonAngle
+        public float CannonAngle
         {
             get => _cannon.Angle;
             set => _cannon.Angle = Math.Clamp(value, 0, 180);
@@ -36,7 +36,7 @@ namespace Tankettes.GameLogic
             CannonAngle = 0;
         }
 
-        public void Update(State state, decimal delta)
+        public void Update(State state, float delta)
         {
             Move(0, 10);
 

@@ -15,7 +15,7 @@ namespace Tankettes.GameLogic
                    Vector2 vec,
                    ref List<IProjectile> projectiles);
 
-        void Update(State state, decimal delta);
+        void Update(State state, float delta);
 
         bool IsDestroyed();
     }

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tankettes.UI;
-using static Tankettes.GameLogic.Player;
 
 namespace Tankettes
 {
@@ -22,10 +21,9 @@ namespace Tankettes
             }
         }
 
-        private const int BlockSize = 4;
         private const int PhysicsDelta = 20;     // 50fps
 
-        private decimal _accumulated = 0;
+        private float _accumulated = 0;
 
         private GameLogic.State _gameState;
 
@@ -33,28 +31,9 @@ namespace Tankettes
 
         public bool Quit { get; private set; }
 
-        public GameLoop(string tankTexture,
-                        string cannonTexture,
-                        string terrainTexture)
+        public GameLoop(GameLogic.State state)
         {
-            var normal = new Shop.NormalProjectile();
-
-
-
-            _gameState = new GameLogic.State(
-                    new Random().Next(),
-                    new List<GameLogic.Player>
-                    {
-                        new GameLogic.Player("A", 1000, Color.Green, new AmmoCapacity(normal, 99)),
-                        new GameLogic.Player("B", 1000, Color.Purple, new AmmoCapacity(normal, 99)),
-                        new GameLogic.Player("C", 1000, Color.Red, new AmmoCapacity(normal, 99)),
-                    },
-                    new Rectangle(0, 0, 1200, 600),
-                    tankTexture,
-                    cannonTexture,
-                    terrainTexture,
-                    BlockSize
-                );
+            _gameState = state;
         }
 
         public void UpdateControls(KeyboardState keyboard)
@@ -64,11 +43,11 @@ namespace Tankettes
 
             if (keyboard.IsKeyDown(Keys.D))
             {
-                _gameState.Players[0].Tank.Move(10, 0);
+                _gameState.Players[0].Tank.Move(1, 0);
             }
             if (keyboard.IsKeyDown(Keys.A))
             {
-                _gameState.Players[0].Tank.Move(-10, 0);
+                _gameState.Players[0].Tank.Move(-1, 0);
             }
         }
 

@@ -8,9 +8,9 @@ namespace Tankettes.GameLogic
     public class Terrain : AbstractDrawable
     {
         private const int DefaultBlurAmount = 100;
-        private const decimal Delta = 10M;
+        private const float Delta = 10f;
 
-        private List<decimal> _heights = new();
+        private List<float> _heights = new();
 
         private readonly int _blockSize;
 
@@ -20,7 +20,7 @@ namespace Tankettes.GameLogic
                        Rectangle rectangle,
                        int seed,
                        int blockSize,
-                       decimal amplitude,
+                       float amplitude,
                        int roughness)
         {
             _texture = texture;
@@ -31,27 +31,27 @@ namespace Tankettes.GameLogic
             RecalculateSprites();
         }
 
-        public decimal Steepness(decimal x)
+        public float Steepness(float x)
         {
-            float h1 = (float)Height(x);
-            float h2 = (float)Height(x + Delta);
-            var toDeg = (decimal)(180f * MathF.PI);
-            return toDeg * (decimal)MathF.Atan2(h2 - h1, (float)Delta);
+            float h1 = Height(x);
+            float h2 = Height(x + Delta);
+            var toDeg = (180f * MathF.PI);
+            return toDeg * MathF.Atan2(h2 - h1, Delta);
         }
 
-        public decimal Height(decimal x)
+        public float Height(float x)
         {
             int Clamp(int idx) => Math.Clamp(idx, 0, _heights.Count - 1);
 
-            int idx = Clamp((int)Math.Floor(x / (decimal)_blockSize));
+            int idx = Clamp((int)Math.Floor(x / (float)_blockSize));
             int next = Clamp(idx + 1);
 
-            decimal h1 = _heights[idx];
-            decimal h2 = _heights[next];
+            float h1 = _heights[idx];
+            float h2 = _heights[next];
 
-            decimal between = (x - idx * _blockSize) / (decimal)_blockSize;
+            float between = (x - idx * _blockSize) / (float)_blockSize;
 
-            decimal value = h1 * (1 - between) + h2 * between;
+            float value = h1 * (1 - between) + h2 * between;
 
             return Rectangle.Bottom - value;
         }
@@ -63,7 +63,7 @@ namespace Tankettes.GameLogic
         }
 
         private void GenerateHeights(int seed,
-                                     decimal amplitude,
+                                     float amplitude,
                                      int roughness)
         {
             var seeds = new int[roughness];
@@ -72,7 +72,7 @@ namespace Tankettes.GameLogic
             int count = Rectangle.Width / _blockSize;
             int blur = DefaultBlurAmount;
 
-            var lists = new List<decimal>[roughness];
+            var lists = new List<float>[roughness];
 
             for (int i = 0; i < roughness; i++)
             {
@@ -101,18 +101,18 @@ namespace Tankettes.GameLogic
                     .ToList();
         }
 
-        private static List<decimal> Generate(int seed,
+        private static List<float> Generate(int seed,
                                               int count,
-                                              decimal amplitude,
+                                              float amplitude,
                                               int flatness)
         {
-            var result = new List<decimal>();
+            var result = new List<float>();
 
             var rand = new Random(seed);
 
             for (int x = 0; x < count; x++)
             {
-                var val = (decimal)(rand.NextDouble() * 2 - 1) * amplitude;
+                var val = (float)(rand.NextDouble() * 2 - 1) * amplitude;
                 result.Add(val);
             }
 
@@ -124,21 +124,21 @@ namespace Tankettes.GameLogic
             return result;
         }
 
-        private static List<decimal> Blur(List<decimal> list)
+        private static List<float> Blur(List<float> list)
         {
-            var result = new List<decimal>();
+            var result = new List<float>();
 
-            var kernel = new decimal[]
+            var kernel = new float[]
             {
-                0.06136M, 0.24477M, 0.38774M, 0.24477M, 0.06136M
+                0.06136f, 0.24477f, 0.38774f, 0.24477f, 0.06136f
             };
 
-            decimal SafeAt(int idx)
+            float SafeAt(int idx)
                     => list[Math.Clamp(idx, 0, list.Count - 1)];
 
             for (int i = 0; i < list.Count; i++)
             {
-                decimal value = 0;
+                float value = 0;
 
                 for (int k = 0; k < kernel.Length; k++)
                 {
