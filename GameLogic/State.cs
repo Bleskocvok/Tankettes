@@ -16,19 +16,17 @@ namespace Tankettes.GameLogic
         public Terrain Terrain { get; set; }
 
         /* Ignopring this property reduces the resulting
-         * file-size by a lot. */
+         * file-size by _a lot_. */
         [JsonIgnore]
         public override ICollection<IDrawable> Elements
         {
             get
             {
-                var result = Terrain.Elements
+                return Terrain.Elements
                     .Union(Tanks())
                     .Union(_projectiles)
                     .Union(_explosions)
                     .ToList();
-
-                return result;
             }
         }
 
@@ -50,7 +48,7 @@ namespace Tankettes.GameLogic
         [JsonProperty]
         private readonly Random _random;
 
-        public State() { Players = null; }
+        public State() { }
 
         public State(int seed,
                      List<Player> players,

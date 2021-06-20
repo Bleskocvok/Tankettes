@@ -80,7 +80,7 @@ namespace Tankettes
             var load = new UI.Button("Continue", new Rectangle(540, 100, 200, 50), _buttonTexture);
             load.EventOnRelease += (s, a) =>
             {
-                var loaded = Serializer.LoadGame("E:\\skola\\c-sharp\\project\\Tankettes\\ahoj.json");
+                var loaded = Serializer.LoadGame("save");
                 _currentGame = new GameLoop(loaded);
                 _window.AddReplace("game", _currentGame);
                 _window.MakeCurrent("game");

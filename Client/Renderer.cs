@@ -52,7 +52,7 @@ namespace Tankettes
                 rect.Offset(correction);
 
                 SpriteBatch.Draw(
-                    Textures[obj.Texture], // 🡸 texture
+                    Textures[obj.Texture],  // 🡸 texture
                     rect,                   // 🡸 destination rectangle
                     null,                   // 🡸 source rectangle
                     obj.Color,              // 🡸 how to color the texture

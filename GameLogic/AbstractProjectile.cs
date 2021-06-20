@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,14 +22,14 @@ namespace Tankettes.GameLogic
         public Vector2 Position
         {
             get => _position;
-            protected set
+            set
             {
                 _position = value;
                 Rectangle = new(_position.ToPoint(), Rectangle.Size);
             }
         }
 
-        public Vector2 Previous { get; protected set; }
+        public Vector2 Previous { get; set; }
 
         public virtual string Name { get; }
 

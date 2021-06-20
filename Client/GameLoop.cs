@@ -30,6 +30,13 @@ namespace Tankettes
         private bool _waitForEquilibrium = false;
 
 
+        private readonly BackgroundSaver _backgroundSaver = new BackgroundSaver
+        {
+            Filename = "save",
+            IntervalMs = 5000
+        };
+
+
         private readonly UI.MenuFrame _ui = new();
 
         private UI.Button _switchButton;
@@ -41,6 +48,8 @@ namespace Tankettes
         public GameLoop(GameLogic.State state)
         {
             _gameState = state;
+
+            _waitForEquilibrium = !_gameState.IsEquilibrium();
 
             InitUI();
         }
@@ -122,7 +131,7 @@ namespace Tankettes
         private void QuitGame()
         {
             Quit = true;
-            Serializer.SaveGame("E:\\skola\\c-sharp\\project\\Tankettes\\ahoj.json", _gameState);
+            _backgroundSaver.ForceSave(_gameState);
         }
 
         private void SwitchType()
@@ -215,6 +224,8 @@ namespace Tankettes
             }
 
             _ui.Update(gameTime);
+
+            _backgroundSaver.Update(_gameState, gameTime);
         }
 
         private void NextTurn()

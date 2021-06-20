@@ -13,7 +13,7 @@ namespace Tankettes
     {
         public static GameLogic.State LoadGame(string filename)
         {
-            string fileContent = File.ReadAllText(filename);
+            string fileContent = File.ReadAllText(filename + ".json");
 
             var settings = new JsonSerializerSettings()
             {
@@ -43,7 +43,7 @@ namespace Tankettes
                     Formatting.Indented,
                     settings);
 
-            File.WriteAllText(filename, resultString);
+            File.WriteAllText(filename + ".json", resultString);
         }
     }
 }

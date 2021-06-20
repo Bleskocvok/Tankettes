@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Tankettes.GameLogic
 {
@@ -13,10 +14,9 @@ namespace Tankettes.GameLogic
         private const float Delta = 10f;
 
         /* (Again) Ignopring this property reduces the resulting
-         * file-size by a lot. */
+         * file-size by _a lot_. */
         [JsonIgnore]
         public override ICollection<IDrawable> Elements => base.Elements;
-        
 
         [JsonProperty]
         private List<float> _heights = new();
@@ -120,7 +120,6 @@ namespace Tankettes.GameLogic
             var seedGen = new Random(seed);
 
             int count = Rectangle.Width / _blockSize;
-            int blur = DefaultBlurAmount;
 
             var lists = new List<float>[roughness];
 
@@ -129,21 +128,35 @@ namespace Tankettes.GameLogic
                 seeds[i] = seedGen.Next();
             }
 
-            /* Note: this code could be easily executed in parallel */
-
-            for (int i = 0; i < roughness; i++)
+            static float DivFunc(float start, int i)
             {
-                lists[i] = Generate(seeds[i], count, amplitude, blur);
-                amplitude /= 2;
-                blur /= 2;
+                float result = start;
+                while (i-- > 0)
+                {
+                    result /= 2f;
+                }
+                return result;
             }
+
+            /* Performing the below algorithm in parallel, because why not.
+             * 
+             * It's much slower... but it's the thought that counts! */
+
+            Parallel.For(0, roughness, i =>
+            {
+                float currentAmplitude = DivFunc(amplitude, i);
+                int blur = (int)DivFunc(DefaultBlurAmount, i);
+                lists[i] = Generate(seeds[i], count, currentAmplitude, blur);
+            });
 
             _heights = Enumerable
                     .Range(0, count)
+                    .AsParallel()
+                    .AsOrdered()
                     // sum all lists
                     .Select(i => lists.Select(list => list.ElementAt(i)).Sum())
-                    // elevate the result so that it doesn't contain any
-                    // negative values
+                    // elevate the result and make sure it doesn't
+                    // contain any negative values
                     .Select(v =>
                         Math.Clamp(v + Rectangle.Height / 2,
                             Rectangle.Height / 10,
