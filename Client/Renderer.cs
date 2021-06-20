@@ -64,7 +64,7 @@ namespace Tankettes
                 rect.Offset(-correction);
             }
 
-            // recursively draw all its children
+            // recursively draw all of its children
             if (obj.Elements != null)
             {
                 var moved = obj.ChildrenRelative
@@ -82,7 +82,7 @@ namespace Tankettes
             {
                 // nice lime green:
                 //     new Color(112, 133, 53);
-                // but white is better
+                // but white looks better
                 var color = Color.White;
 
                 SpriteBatch.DrawString(

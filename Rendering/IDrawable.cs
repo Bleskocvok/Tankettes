@@ -15,7 +15,7 @@ namespace Tankettes
 
         Rectangle Rectangle { get; set; }
 
-        IEnumerable<IDrawable> Elements { get; }
+        ICollection<IDrawable> Elements { get; }
 
         Label Label { get; }
 

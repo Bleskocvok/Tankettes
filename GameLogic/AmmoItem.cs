@@ -34,7 +34,7 @@ namespace Tankettes.GameLogic
             }
             else
             {
-                buyer.Ammo.Add(new Player.AmmoCapacity(new T(), BuyAmount));
+                buyer.Ammo.Add(new AmmoCapacity(new T(), BuyAmount));
             }
         }
     }

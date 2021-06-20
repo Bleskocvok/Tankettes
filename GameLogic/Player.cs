@@ -12,8 +12,6 @@ namespace Tankettes.GameLogic
         public static int MaxPower = 100;
         private const int DefaultTankHealth = 100;
 
-        public record AmmoCapacity(IProjectile Type, int Count);
-
         public string Name { get; init; }
 
         public int Money { get; set; }

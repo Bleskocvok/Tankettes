@@ -10,7 +10,10 @@ namespace Tankettes.UI
 {
     class MenuFrame : AbstractDrawable, IMenuScreen
     {
-        public override IEnumerable<IDrawable> Elements { get => _elements; }
+        public override ICollection<IDrawable> Elements
+        {
+            get => _elements.Select(el => (IDrawable)el).ToList();
+        }
 
         private readonly List<IElementUI> _elements = new();
 

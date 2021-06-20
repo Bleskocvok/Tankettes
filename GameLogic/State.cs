@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,39 +15,42 @@ namespace Tankettes.GameLogic
 
         public Terrain Terrain { get; set; }
 
-        public override IEnumerable<IDrawable> Elements
+        /* Ignopring this property reduces the resulting
+         * file-size by a lot. */
+        [JsonIgnore]
+        public override ICollection<IDrawable> Elements
         {
             get
             {
                 var result = Terrain.Elements
                     .Union(Tanks())
                     .Union(_projectiles)
-                    .Union(_explosions);
+                    .Union(_explosions)
+                    .ToList();
 
                 return result;
             }
         }
 
-        public float Wind { get; set; }
+        public float Wind { get; private set; }
 
-        public Player CurrentPlayer { get => Players[_current]; }
+        public Player CurrentPlayer { get => Players?[_current]; }
 
         public List<Player> Players { get; init; }
 
+        [JsonProperty]
         private int _current = 0;
 
+        [JsonProperty]
         private List<IProjectile> _projectiles = new();
 
-        private List<Explosion> _explosions = new();
+        [JsonProperty]
+        private readonly List<Explosion> _explosions = new();
 
+        [JsonProperty]
         private readonly Random _random;
 
-        public State()
-        {
-            // TODO
-            /*// use random seed
-            _random = new Random();*/
-        }
+        public State() { Players = null; }
 
         public State(int seed,
                      List<Player> players,
@@ -182,6 +186,9 @@ namespace Tankettes.GameLogic
 
         private IEnumerable<Tank> Tanks()
         {
+            if (Players == null)
+                return Enumerable.Empty<Tank>();
+
             return Players
                 .Where(p => p.Tank != null)
                 .Select(p => p.Tank);

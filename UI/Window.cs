@@ -15,7 +15,7 @@ namespace Tankettes.UI
             get => _menuScreens[_current];
         }
 
-        public override IEnumerable<IDrawable> Elements => Current.Elements;
+        public override ICollection<IDrawable> Elements => Current.Elements;
 
         public bool Quit { get; set; }
 

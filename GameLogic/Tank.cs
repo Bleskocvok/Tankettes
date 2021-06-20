@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,9 +20,32 @@ namespace Tankettes.GameLogic
             set => _cannon.Angle = Math.Clamp(value, 0, 180);
         }
 
+        [JsonIgnore]
+        public override ICollection<IDrawable> Elements => base.Elements;
+
+        [JsonProperty]
+        private readonly Sprite _cannon;
+
         public int Health { get; set; }
 
-        private readonly Sprite _cannon;
+        [JsonConstructor]
+        public Tank(string texture,
+                    [JsonProperty("_cannon")] Sprite cannon,
+                    Rectangle rectangle,
+                    Color color,
+                    int health,
+                    float cannonAngle)
+        {
+            Texture = texture;
+            Rectangle = rectangle;
+            Color = color;
+            Health = health;
+
+            _cannon = cannon;
+            Elements = new List<IDrawable> { _cannon };
+
+            CannonAngle = cannonAngle;
+        }
 
         public Tank(string tank,
                     string cannon,
@@ -29,13 +53,15 @@ namespace Tankettes.GameLogic
                     Color color,
                     int startHealth)
         {
-            base.Texture = new string(tank);
-            base.Rectangle = rectangle;
-            base.Color = color;
+            Texture = tank;
+            Rectangle = rectangle;
+            Color = color;
             Health = startHealth;
+
             _cannon = new Sprite(cannon,
                     new Rectangle(Point.Zero, Rectangle.Size));
-            base.Elements = new List<IDrawable> { _cannon };
+            Elements = new List<IDrawable> { _cannon };
+            
             CannonAngle = 0;
         }
 

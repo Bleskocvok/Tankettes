@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Tankettes
 {
@@ -13,7 +14,7 @@ namespace Tankettes
 
         public virtual Rectangle Rectangle { get; set; }
 
-        public virtual IEnumerable<IDrawable> Elements
+        public virtual ICollection<IDrawable> Elements
         {
             get;
             protected set;

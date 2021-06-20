@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Tankettes.GameLogic
@@ -10,11 +12,35 @@ namespace Tankettes.GameLogic
         private const int DefaultBlurAmount = 100;
         private const float Delta = 10f;
 
+        /* (Again) Ignopring this property reduces the resulting
+         * file-size by a lot. */
+        [JsonIgnore]
+        public override ICollection<IDrawable> Elements => base.Elements;
+        
+
+        [JsonProperty]
         private List<float> _heights = new();
 
+        [JsonProperty]
         private readonly int _blockSize;
 
-        private readonly string _texture;
+        [JsonProperty]
+        private readonly string _blockTexture;
+
+        [JsonConstructor]
+        public Terrain([JsonProperty("_blockTexture")] string texture,
+                       [JsonProperty("Rectangle")] Rectangle rectangle,
+                       [JsonProperty("_blockSize")] int blockSize,
+                       [JsonProperty("_heights")] List<float> heights)
+        {
+            _blockTexture = texture;
+            Rectangle = rectangle;
+            _blockSize = blockSize;
+            _heights = heights;
+
+            // reconstruct the elements, since they were ignored
+            RecalculateSprites();
+        }
 
         public Terrain(string texture,
                        Rectangle rectangle,
@@ -23,9 +49,14 @@ namespace Tankettes.GameLogic
                        float amplitude,
                        int roughness)
         {
-            _texture = texture;
+            _blockTexture = texture;
             Rectangle = rectangle;
             _blockSize = blockSize;
+
+            if (_blockSize == 0)
+            {
+                throw new ArgumentException("Invalid blockSize");
+            }
 
             GenerateHeights(seed, amplitude, roughness);
             RecalculateSprites();
@@ -186,7 +217,7 @@ namespace Tankettes.GameLogic
                                 Rectangle.Y + y,
                                 _blockSize,
                                 _blockSize);
-                        list.Add(new Sprite(_texture, rect));
+                        list.Add(new Sprite(_blockTexture, rect));
                     }
                 }
             }

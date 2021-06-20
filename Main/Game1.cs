@@ -77,11 +77,21 @@ namespace Tankettes
                 _window.MakeCurrent("game");
             };
 
+            var load = new UI.Button("Continue", new Rectangle(540, 100, 200, 50), _buttonTexture);
+            load.EventOnRelease += (s, a) =>
+            {
+                var loaded = Serializer.LoadGame("E:\\skola\\c-sharp\\project\\Tankettes\\ahoj.json");
+                _currentGame = new GameLoop(loaded);
+                _window.AddReplace("game", _currentGame);
+                _window.MakeCurrent("game");
+            };
+
             var exit = new UI.Button("Exit", new Rectangle(540, 500, 200, 50), _buttonTexture);
             exit.EventOnRelease += (s, a) => _window.Quit = true;
 
             var mainMenu = new UI.MenuFrame();
             mainMenu.Add(button);
+            mainMenu.Add(load);
             mainMenu.Add(exit);
 
             var back = new UI.Button("back", new Rectangle(150, 50, 200, 50), _buttonTexture);

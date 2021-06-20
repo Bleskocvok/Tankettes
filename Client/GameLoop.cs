@@ -18,14 +18,14 @@ namespace Tankettes
 
         private KeyboardState _previous = Keyboard.GetState();
 
-        public override IEnumerable<IDrawable> Elements
+        public override ICollection<IDrawable> Elements
         {
-            get => _gameState.Elements.Union(_ui.Elements);
+            get => _gameState.Elements.Union(_ui.Elements).ToList();
         }
 
         private float _accumulated = 0;
 
-        private GameLogic.State _gameState;
+        private readonly GameLogic.State _gameState;
 
         private bool _waitForEquilibrium = false;
 
@@ -66,17 +66,16 @@ namespace Tankettes
                                 "button_normal",
                                 "button_over",
                                 "button_press"));
-            back.EventOnRelease += (s, a) => Quit = true;
+            back.EventOnRelease += (s, a) => QuitGame();
 
             _powerSlider = new Slider(0, GameLogic.Player.MaxPower, 0, new Rectangle(800, 640, 200, 50));
             _angleSlider = new Slider(0, 180, 0, new Rectangle(1030, 640, 200, 50));
 
             _angleSlider.EventOnChange += (s, a)
-                    => _gameState.CurrentPlayer.Tank.CannonAngle
-                            = 180 - _angleSlider.Value;
+                    => SetAngle(180 - _angleSlider.Value);
 
             _powerSlider.EventOnChange += (s, a)
-                    => _gameState.CurrentPlayer.Power = _powerSlider.Value;
+                    => SetPower(_powerSlider.Value);
 
             _ui.Add(fire);
             _ui.Add(_switchButton);
@@ -88,12 +87,28 @@ namespace Tankettes
             UpdateSliders();
         }
 
+        private void SetAngle(float angle)
+        {
+            if (_gameState.CurrentPlayer == null
+                    || _gameState.CurrentPlayer.Tank == null)
+                return;
+
+            _gameState.CurrentPlayer.Tank.CannonAngle = angle;
+        }
+
+        private void SetPower(int val)
+        {
+            if (_gameState.CurrentPlayer == null)
+                return;
+
+            _gameState.CurrentPlayer.Power = val;
+        }
+
         public void UpdateControls(KeyboardState keyboard)
         {
             if (keyboard.IsKeyDown(Keys.Escape))
             {
-                Quit = true;
-                // TODO save progress
+                QuitGame();
             }
 
             if (!_waitForEquilibrium)
@@ -102,6 +117,12 @@ namespace Tankettes
             }
 
             _previous = keyboard;
+        }
+
+        private void QuitGame()
+        {
+            Quit = true;
+            Serializer.SaveGame("E:\\skola\\c-sharp\\project\\Tankettes\\ahoj.json", _gameState);
         }
 
         private void SwitchType()
@@ -122,7 +143,9 @@ namespace Tankettes
                 return;
 
             _powerSlider.Value = _gameState.CurrentPlayer.Power;
-            _angleSlider.Value = (int)(180f - _gameState.CurrentPlayer.Tank.CannonAngle);
+
+            var angle = _gameState.CurrentPlayer.Tank.CannonAngle;
+            _angleSlider.Value = (int)(180f - angle);
         }
 
         private void UpdateAmmoLabel()
