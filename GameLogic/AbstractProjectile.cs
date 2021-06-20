@@ -68,7 +68,7 @@ namespace Tankettes.GameLogic
             if ((float)Position.Y >= state.Terrain.Height((float)Position.X))
             {
                 _destroyed = true;
-                state.Terrain.Explode(Position.ToPoint(), ExplosionRadius);
+                state.Explode(Position.ToPoint(), ExplosionRadius);
             }
         }
     }

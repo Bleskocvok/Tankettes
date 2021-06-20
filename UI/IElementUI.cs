@@ -12,5 +12,7 @@ namespace Tankettes.UI
         void UpdateMouse(Point pos);
 
         void Click(bool ended = false);
+
+        void Update(GameTime gameTime);
     }
 }

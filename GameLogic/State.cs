@@ -20,7 +20,8 @@ namespace Tankettes.GameLogic
             {
                 var result = Terrain.Elements
                     .Union(Tanks())
-                    .Union(_projectiles);
+                    .Union(_projectiles)
+                    .Union(_explosions);
 
                 return result;
             }
@@ -35,6 +36,8 @@ namespace Tankettes.GameLogic
         private int _current = 0;
 
         private List<IProjectile> _projectiles = new();
+
+        private List<Explosion> _explosions = new();
 
         private readonly Random _random;
 
@@ -90,8 +93,11 @@ namespace Tankettes.GameLogic
 
         public void Shoot()
         {
+            if (CurrentPlayer.Tank == null)
+                return;
+
             var pos = CurrentPlayer.Tank.Rectangle.Center.ToVector2();
-            
+
             var angle = -CurrentPlayer.Tank.CannonAngle / 180f * MathF.PI;
             var vec = new Vector2(MathF.Cos(angle),
                                   MathF.Sin(angle));
@@ -120,34 +126,57 @@ namespace Tankettes.GameLogic
             return Players.Count(p => p.IsAlive()) < 2;
         }
 
+        private void UpdateElements<T>(List<T> list, float delta)
+            where T : IGameElement
+        {
+            list.RemoveAll(el => el.IsDestroyed());
+
+            list.ForEach(el =>
+            {
+                el.Update(this, delta);
+            });
+        }
+
         public void Update(float delta)
         {
-            // update projectiles
-            foreach (var proj in _projectiles)
-            {
-                proj.Update(this, delta);
-            }
+            // update projectiles and explosions trivially
 
-            // delete exploded projectiles
-            _projectiles = _projectiles
-                .Where(p => !p.IsDestroyed())
-                .ToList();
+            UpdateElements(_projectiles, delta);
+            UpdateElements(_explosions, delta);
 
             // update tanks
-            var tanks = Players
-                .Where(p => p != null)
-                .Select(p => p.Tank);
 
-            foreach (var tank in tanks)
+            foreach (var tank in Tanks())
             {
                 tank.Update(this, delta);
             }
+
+            Players.ForEach(p =>
+            {
+                if (p.Tank != null && p.Tank.IsDestroyed())
+                {
+                    p.Tank = null;
+                }
+            });
         }
 
         public void Explode(Point pos, float radius)
         {
             Terrain.Explode(pos, radius);
-            // TODO: add a particle effect
+            _explosions.Add(new Explosion(pos, radius));
+
+            foreach (var tank in Tanks())
+            {
+                bool ok = !tank.IsDestroyed();
+                Explosion.Hit(tank, pos, radius);
+
+                // destroyed tank need to explode
+                // resulting in recursive call
+                if (ok && tank.IsDestroyed())
+                {
+                    Explode(tank.Rectangle.Center, Explosion.TankExplosionRadius);
+                }
+            }
         }
 
         private IEnumerable<Tank> Tanks()

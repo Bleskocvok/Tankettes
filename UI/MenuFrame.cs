@@ -34,6 +34,12 @@ namespace Tankettes.UI
 
         public void UpdateControls(KeyboardState keyboard) { }
 
-        public void Update(GameTime gameTime) { }
+        public void Update(GameTime gameTime)
+        {
+            foreach (var but in _elements)
+            {
+                but.Update(gameTime);
+            }
+        }
     }
 }

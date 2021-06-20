@@ -11,7 +11,5 @@ namespace Tankettes.UI
     interface IMenuScreen : IDrawable, IElementUI
     {
         void UpdateControls(KeyboardState keyboard);
-
-        void Update(GameTime gameTime);
     }
 }

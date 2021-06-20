@@ -28,6 +28,7 @@ namespace Tankettes.UI
         }
 
         public event EventHandler EventOnRelease;
+        public event EventHandler EventOnHold;
 
         private readonly ButtonTexture _texture;
 
@@ -78,6 +79,14 @@ namespace Tankettes.UI
                     }
                     SetState();
                     break;
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if (State == ButtonState.Pressed)
+            {
+                EventOnHold?.Invoke(this, new EventArgs());
             }
         }
     }

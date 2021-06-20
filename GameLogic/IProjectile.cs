@@ -7,16 +7,12 @@ using System.Threading.Tasks;
 
 namespace Tankettes.GameLogic
 {
-    public interface IProjectile : IDrawable
+    public interface IProjectile : IGameElement
     {
         float ExplosionRadius { get; }
 
         void Shoot(Point pos,
                    Vector2 vec,
                    ref List<IProjectile> projectiles);
-
-        void Update(State state, float delta);
-
-        bool IsDestroyed();
     }
 }

@@ -52,9 +52,9 @@ namespace Tankettes
                         new Random().Next(),
                         new List<GameLogic.Player>
                         {
-                        new GameLogic.Player("A", 1000, Color.Green, new AmmoCapacity(normal, 99)),
-                        new GameLogic.Player("B", 1000, Color.Purple, new AmmoCapacity(normal, 99)),
-                        new GameLogic.Player("C", 1000, Color.Red, new AmmoCapacity(normal, 99)),
+                        new GameLogic.Player("Green", 1000, Color.Green, new AmmoCapacity(normal, 99)),
+                        new GameLogic.Player("Purple", 1000, Color.Purple, new AmmoCapacity(normal, 99)),
+                        new GameLogic.Player("Red", 1000, Color.Red, new AmmoCapacity(normal, 99)),
                         },
                         new Rectangle(0, 0, 1280, 600),
                         "tank",
@@ -102,7 +102,8 @@ namespace Tankettes
             var toLoad = new string[]
             {
                 "button_normal", "button_over", "button_press",
-                "terrain",
+                "fire_button_normal", "fire_button_hover", "fire_button_press",
+                "terrain", "explosion",
                 "tank", "cannon", "ball",
             };
 

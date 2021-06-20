@@ -40,7 +40,8 @@ namespace Tankettes.GameLogic
 
         public Tank Tank { get; set; } = null;
 
-        public bool IsAlive() => Tank != null && !Tank.IsDestroyed();
+        public bool IsAlive()
+                => Tank != null && !Tank.IsDestroyed();
 
         public Player() { }
 
@@ -55,7 +56,17 @@ namespace Tankettes.GameLogic
             Ammo.Add(defaultAmmo);
         }
 
-        public void NextAmmo() => _selected = (_selected + 1) % Ammo.Count;
+        public void SpendAmmo()
+        {
+            Ammo[_selected] = new(SelectedAmmo.Type, SelectedAmmo.Count -1);
+            if (SelectedAmmo.Count <= 0)
+            {
+                Ammo.Remove(SelectedAmmo);
+            }
+        }
+
+        public void NextAmmo()
+                => _selected = (_selected + 1) % Ammo.Count;
 
         public void PrevAmmo()
         {

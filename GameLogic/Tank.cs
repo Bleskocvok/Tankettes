@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Tankettes.GameLogic
 {
-    public class Tank : AbstractDrawable
+    public class Tank : AbstractDrawable, IGameElement
     {
         private const float Gravity = 100f;
         private const int Epsilon = 3;
@@ -73,7 +73,7 @@ namespace Tankettes.GameLogic
 
         public bool IsEquilibrium(State state)
         {
-            var height = state.Terrain.Height(Rectangle.Center.X);
+            float height = state.Terrain.Height(Rectangle.Center.X);
             return Rectangle.Bottom - height < Epsilon;
         }
 
