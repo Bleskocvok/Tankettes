@@ -14,6 +14,7 @@ namespace Tankettes
         private const int TankSpeed = 1;
         private const float CannonAngleSpeed = 1;
 
+        private const int PhysicsDelta = 20;     // 20ms = 50fps
 
         private KeyboardState _previous = Keyboard.GetState();
 
@@ -22,8 +23,6 @@ namespace Tankettes
             get => _gameState.Elements.Union(_ui.Elements);
         }
 
-        private const int PhysicsDelta = 20;     // 20ms = 50fps
-
         private float _accumulated = 0;
 
         private GameLogic.State _gameState;
@@ -31,7 +30,7 @@ namespace Tankettes
         private bool _waitForEquilibrium = false;
 
 
-        private UI.MenuFrame _ui = new();
+        private readonly UI.MenuFrame _ui = new();
 
         private UI.Button _switchButton;
         private UI.Slider _powerSlider;
@@ -189,12 +188,17 @@ namespace Tankettes
             if (_waitForEquilibrium && _gameState.IsEquilibrium())
             {
                 _waitForEquilibrium = false;
-                _gameState.NextPlayer();
-                UpdateAmmoLabel();
-                UpdateSliders();
+                NextTurn();
             }
 
             _ui.Update(gameTime);
+        }
+
+        private void NextTurn()
+        {
+            _gameState.NextPlayer();
+            UpdateAmmoLabel();
+            UpdateSliders();
         }
 
         public void UpdateMouse(Point pos)

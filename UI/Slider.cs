@@ -67,11 +67,11 @@ namespace Tankettes.UI
 
         private void Shift()
         {
-            _value = Math.Clamp(_value, _limit.max, _limit.max);
+            _value = Math.Clamp(_value, _limit.min, _limit.max);
 
             var r = _button.Rectangle;
 
-            var ratio = (_value - _limit.min)
+            float ratio = (_value - _limit.min)
                         / (float)(_limit.max - _limit.min);
 
             int d = (int)(ratio * (Rectangle.Width - r.Width));
