@@ -18,15 +18,13 @@ namespace Tankettes
 
         private Renderer _renderer;
 
-        private readonly UI.Window _window = new();
-        private readonly UI.ButtonTexture _buttonTexture
-                = new("button_normal", "button_over", "button_press");
+        private UI.Window _window = new();
 
         private const int BlockSize = 4;
 
         private GameLoop _currentGame = null;
 
-        private List<Player> _players;
+        private UI.Image _victoryImage;
 
         public Game1()
         {
@@ -43,65 +41,7 @@ namespace Tankettes
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.ApplyChanges();
 
-            var button = new UI.Button("play", new Rectangle(540, 300, 200, 50), _buttonTexture);
-            button.EventOnRelease += (s, a) =>
-            {
-                var terrain = new GameLogic.Terrain("terrain",
-                                          new Rectangle(0, 100, 1200, 600),
-                                          0, 4, 120, 1);
-
-                var shop = new List<IShopItem>
-                {
-                    new AmmoItem<NormalProjectile>{ Name = "Normal", Price = 500, BuyAmount = 5 },
-                };
-
-                var normal = new Shop.NormalProjectile();
-
-                var state = new GameLogic.State(
-                        new Random().Next(),
-                        new List<GameLogic.Player>
-                        {
-                        new GameLogic.Player("Green", 1000, Color.LimeGreen, new AmmoCapacity(normal, 99)),
-                        new GameLogic.Player("Purple", 1000, Color.LightPink, new AmmoCapacity(normal, 99)),
-                        new GameLogic.Player("Red", 1000, Color.Red, new AmmoCapacity(normal, 99)),
-                        },
-                        new Rectangle(0, 0, 1280, 600),
-                        "tank",
-                        "cannon",
-                        "terrain",
-                        BlockSize
-                    );
-
-                _currentGame = new GameLoop(state);
-                _window.AddReplace("game", _currentGame);
-                _window.MakeCurrent("game");
-            };
-
-            var load = new UI.Button("Continue", new Rectangle(540, 100, 200, 50), _buttonTexture);
-            load.EventOnRelease += (s, a) =>
-            {
-                var loaded = Serializer.LoadGame("save");
-                _currentGame = new GameLoop(loaded);
-                _window.AddReplace("game", _currentGame);
-                _window.MakeCurrent("game");
-            };
-
-            var exit = new UI.Button("Exit", new Rectangle(540, 500, 200, 50), _buttonTexture);
-            exit.EventOnRelease += (s, a) => _window.Quit = true;
-
-            var mainMenu = new UI.MenuFrame();
-            mainMenu.Add(button);
-            mainMenu.Add(load);
-            mainMenu.Add(exit);
-
-            var back = new UI.Button("back", new Rectangle(150, 50, 200, 50), _buttonTexture);
-            back.EventOnRelease += (s, a) => _window.MakeCurrent("main");
-
-            var second = new UI.MenuFrame();
-            second.Add(back);
-
-            _window.Add("main", mainMenu);
-            _window.Add("second", second);
+            InitMenu();
 
             base.Initialize();
 
@@ -112,19 +52,26 @@ namespace Tankettes
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-             _renderer = new Renderer
-             {
-                 Graphics = _graphics,
-                 SpriteBatch = _spriteBatch,
-             };
+            _renderer = new Renderer
+            {
+                Graphics = _graphics,
+                SpriteBatch = _spriteBatch,
+            };
 
             var toLoad = new string[]
             {
+                // ui
                 "button_normal", "button_over", "button_press",
                 "fire_button_normal", "fire_button_hover", "fire_button_press",
                 "slider", "slider_background",
+                
+                // gameplay
                 "terrain", "explosion",
                 "tank", "cannon", "ball",
+                "victory",
+
+                // useless
+                "icon"
             };
 
             _renderer.LoadAssets(Content, "font", toLoad);
@@ -146,10 +93,7 @@ namespace Tankettes
             if (_window.Quit)
                 Exit();
 
-            if (_currentGame != null && _currentGame.Quit)
-            {
-                _window.MakeCurrent("main");
-            }
+            CheckGameOver();
 
             MouseState state = Mouse.GetState();
             _window.UpdateMouse(state.Position);
@@ -162,7 +106,7 @@ namespace Tankettes
 
             _window.UpdateControls(keyboard);
             _window.Update(gameTime);
-            
+
             base.Update(gameTime);
 
             _prevKeyboard = keyboard;
@@ -175,10 +119,106 @@ namespace Tankettes
             _spriteBatch.Begin();
 
             _renderer.Draw(_window, Point.Zero);
-            
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void CheckGameOver()
+        {
+            if (_currentGame != null && _currentGame.GameEnded)
+            {
+                _window.MakeCurrent("game_over");
+                _victoryImage.Color = _currentGame.Victor()?.TankColor
+                                      ?? Color.White;
+                _currentGame = null;
+            }
+
+            if (_currentGame != null && _currentGame.Quit)
+            {
+                _window.MakeCurrent("main");
+                _currentGame = null;
+            }
+        }
+
+        private void NewGame()
+        {
+            // TBD
+            var shop = new List<IShopItem>
+            {
+                new AmmoItem<NormalProjectile>{ Name = "Normal", Price = 500, BuyAmount = 5 },
+            };
+
+            var normal = new Shop.NormalProjectile();
+            var bigBoom = new Shop.BigBoomProjectile();
+
+            List<AmmoCapacity> GenerateAmmo()
+            {
+                return new List<AmmoCapacity>
+                {
+                    new AmmoCapacity(normal, 99),
+                    new AmmoCapacity(bigBoom, 3),
+                };
+            }
+
+            var state = new GameLogic.State(
+                    new Random().Next(),
+                    new List<Player>
+                    {
+                        new Player("Green", 1000, Color.LimeGreen, GenerateAmmo()),
+                        new Player("Purple", 1000, Color.LightPink, GenerateAmmo()),
+                        new Player("Red", 1000, Color.Red, GenerateAmmo()),
+                    },
+                    new Rectangle(0, 0, 1280, 600),
+                    "tank",
+                    "cannon",
+                    "terrain",
+                    BlockSize
+                );
+
+            _currentGame = new GameLoop(state);
+            _window.AddReplace("game", _currentGame);
+            _window.MakeCurrent("game");
+        }
+
+        private void LoadGame()
+        {
+            if (!Serializer.Exists("save"))
+            {
+                return;
+            }
+
+            var loaded = Serializer.LoadGame("save");
+            _currentGame = new GameLoop(loaded);
+            _window.AddReplace("game", _currentGame);
+            _window.MakeCurrent("game");
+        }
+
+        private void InitMenu()
+        {
+            var builder = new UI.GameWindowBuilder
+            {
+                ButtonTexture = new UI.ButtonTexture("button_normal",
+                                                     "button_over",
+                                                     "button_press")
+            };
+
+            builder.AddMenuFrame("main");
+            builder.AddMenuFrame("game_over");
+
+
+            builder.AddAny("main", new UI.Image("icon", new Rectangle(590, 100, 100, 100)));
+            builder.AddButton("main", "Play", 540, 300, NewGame);
+            builder.AddButton("main", "Continue", 540, 400, LoadGame);
+            builder.AddButton("main", "Exit", 540, 600, Exit);
+
+            _victoryImage = builder.AddAny("game_over", new UI.Image("victory",
+                        new Rectangle(490, 100, 300, 300)))
+                        as UI.Image;
+            builder.AddButtonTransition("game_over", "Back", 540, 600, "main");
+
+            _window = builder.Build();
         }
     }
 }

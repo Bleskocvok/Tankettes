@@ -11,9 +11,18 @@ namespace Tankettes
 {
     public class Serializer
     {
+        private static string Suffix(string name)
+                => name + ".json";
+
+        public static bool Exists(string filename)
+                => File.Exists(Suffix(filename));
+
+        public static void DeleteSave(string filename)
+                => File.Delete(Suffix(filename));
+
         public static GameLogic.State LoadGame(string filename)
         {
-            string fileContent = File.ReadAllText(filename + ".json");
+            string fileContent = File.ReadAllText(Suffix(filename));
 
             var settings = new JsonSerializerSettings()
             {
@@ -43,7 +52,7 @@ namespace Tankettes
                     Formatting.Indented,
                     settings);
 
-            File.WriteAllText(filename + ".json", resultString);
+            File.WriteAllText(Suffix(filename), resultString);
         }
     }
 }

@@ -42,8 +42,22 @@ namespace Tankettes
         private UI.Button _switchButton;
         private UI.Slider _powerSlider;
         private UI.Slider _angleSlider;
+        private UI.Image _playerImage;
 
         public bool Quit { get; private set; }
+
+        public bool GameEnded { get; private set; }
+
+        public GameLogic.Player Victor()
+        {
+            if (_gameState.Tanks().Count() != 1)
+            {
+                return null;
+            }
+
+            return _gameState.Players
+                    .First(p => p.Tank != null && !p.Tank.IsDestroyed());
+        }
 
         public GameLoop(GameLogic.State state)
         {
@@ -56,29 +70,37 @@ namespace Tankettes
 
         private void InitUI()
         {
-            var fire = new Button("", new Rectangle(565, 570, 150, 150),
+            var fire = new Button("",
+                            new Rectangle(565, 570, 150, 150),
                             new ButtonTexture(
                                 "fire_button_normal",
                                 "fire_button_hover",
                                 "fire_button_press"));
             fire.EventOnRelease += (s, a) => Shoot();
 
-            _switchButton = new Button("", new Rectangle(200, 640, 200, 50),
+            _switchButton = new Button("",
+                            new Rectangle(200, 640, 200, 50),
                             new ButtonTexture(
                                 "button_normal",
                                 "button_over",
                                 "button_press"));
             _switchButton.EventOnRelease += (s, a) => SwitchType();
 
-            var back = new Button("exit", new Rectangle(30, 640, 100, 50),
+            var back = new Button("exit",
+                            new Rectangle(30, 640, 100, 50),
                             new ButtonTexture(
                                 "button_normal",
                                 "button_over",
                                 "button_press"));
             back.EventOnRelease += (s, a) => QuitGame();
 
-            _powerSlider = new Slider(0, GameLogic.Player.MaxPower, 0, new Rectangle(800, 640, 200, 50));
-            _angleSlider = new Slider(0, 180, 0, new Rectangle(1030, 640, 200, 50));
+            _playerImage = new Image("tank",
+                            new Rectangle(140, 640, 50, 50));
+
+            _powerSlider = new Slider(0, GameLogic.Player.MaxPower, 0,
+                                      new Rectangle(1030, 640, 200, 50));
+            _angleSlider = new Slider(0, 180, 0,
+                                      new Rectangle(800, 640, 200, 50));
 
             _angleSlider.EventOnChange += (s, a)
                     => SetAngle(180 - _angleSlider.Value);
@@ -91,9 +113,11 @@ namespace Tankettes
             _ui.Add(back);
             _ui.Add(_powerSlider);
             _ui.Add(_angleSlider);
+            _ui.Add(_playerImage);
 
             UpdateAmmoLabel();
             UpdateSliders();
+            UpdatePlayerImage();
         }
 
         private void SetAngle(float angle)
@@ -141,6 +165,11 @@ namespace Tankettes
 
             _gameState.CurrentPlayer.NextAmmo();
             UpdateAmmoLabel();
+        }
+
+        private void UpdatePlayerImage()
+        {
+            _playerImage.Color = _gameState.CurrentPlayer.TankColor;
         }
 
         private void UpdateSliders()
@@ -210,6 +239,15 @@ namespace Tankettes
 
         public void Update(GameTime gameTime)
         {
+            if (_gameState.IsRoundOver())
+            {
+                QuitGame();
+
+                // to indicate that the game ended by someone winning
+                // rather than the game being exited mid-game
+                GameEnded = true;
+            }
+
             _accumulated += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             for (; _accumulated >= PhysicsDelta; _accumulated -= PhysicsDelta)
@@ -233,6 +271,7 @@ namespace Tankettes
             _gameState.NextPlayer();
             UpdateAmmoLabel();
             UpdateSliders();
+            UpdatePlayerImage();
         }
 
         public void UpdateMouse(Point pos)

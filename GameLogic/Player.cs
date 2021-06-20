@@ -30,7 +30,7 @@ namespace Tankettes.GameLogic
 
         public Color TankColor { get; set; } = Color.White;
 
-        public List<AmmoCapacity> Ammo { get; set; } = new();
+        public List<AmmoCapacity> Ammo { get; set; }
 
         public AmmoCapacity SelectedAmmo => Ammo[_selected];
 
@@ -46,20 +46,29 @@ namespace Tankettes.GameLogic
         public Player(string name,
                       int money,
                       Color color,
-                      AmmoCapacity defaultAmmo)
+                      List<AmmoCapacity> ammo)
         {
             Name = name;
             Money = money;
             TankColor = color;
-            Ammo.Add(defaultAmmo);
+            Ammo = ammo;
         }
+
+        public Player(string name,
+                      int money,
+                      Color color,
+                      AmmoCapacity defaultAmmo)
+            : this(name, money, color, new List<AmmoCapacity> { defaultAmmo })
+        { }
 
         public void SpendAmmo()
         {
             Ammo[_selected] = new(SelectedAmmo.Type, SelectedAmmo.Count -1);
+
             if (SelectedAmmo.Count <= 0)
             {
                 Ammo.Remove(SelectedAmmo);
+                _selected = Math.Min(_selected, Ammo.Count - 1);
             }
         }
 

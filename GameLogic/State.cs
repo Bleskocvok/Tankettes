@@ -182,7 +182,7 @@ namespace Tankettes.GameLogic
             }
         }
 
-        private IEnumerable<Tank> Tanks()
+        public IEnumerable<Tank> Tanks()
         {
             if (Players == null)
                 return Enumerable.Empty<Tank>();

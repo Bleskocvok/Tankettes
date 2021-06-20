@@ -8,26 +8,26 @@ using Tankettes.GameLogic;
 
 namespace Tankettes.Shop
 {
-    public class NormalProjectile : AbstractProjectile
+    public class BigBoomProjectile : AbstractProjectile
     {
-        public override string Name => "Normal";
+        public override string Name => "BigBoom";
 
         public override string Texture => "ball";
 
-        public override float ExplosionRadius => 20f;
+        public override float ExplosionRadius => 60f;
 
         public override void Shoot(Point pos,
                                    Vector2 vec,
                                    ref List<IProjectile> projectiles)
         {
-            projectiles.Add(new NormalProjectile(pos, vec));
+            projectiles.Add(new BigBoomProjectile(pos, vec));
         }
 
-        public NormalProjectile()
-            : base() {}
+        public BigBoomProjectile()
+            : base() { }
 
-        public NormalProjectile(Point pos, Vector2 vec)
+        public BigBoomProjectile(Point pos, Vector2 vec)
             : base(pos, vec)
-        {}
+        { }
     }
 }

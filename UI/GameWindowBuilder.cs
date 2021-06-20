@@ -40,6 +40,12 @@ namespace Tankettes.UI
             });
         }
 
+        public IElementUI AddAny(string frame, IElementUI any)
+        {
+            (_result.MenuScreens[frame] as MenuFrame).Add(any);
+            return any;
+        }
+
         public Button AddButton(string frame,
                                 string buttonText,
                                 int x, int y,
