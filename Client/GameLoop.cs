@@ -68,58 +68,6 @@ namespace Tankettes
             InitUI();
         }
 
-        private void InitUI()
-        {
-            var fire = new Button("",
-                            new Rectangle(565, 570, 150, 150),
-                            new ButtonTexture(
-                                "fire_button_normal",
-                                "fire_button_hover",
-                                "fire_button_press"));
-            fire.EventOnRelease += (s, a) => Shoot();
-
-            _switchButton = new Button("",
-                            new Rectangle(200, 640, 200, 50),
-                            new ButtonTexture(
-                                "button_normal",
-                                "button_over",
-                                "button_press"));
-            _switchButton.EventOnRelease += (s, a) => SwitchType();
-
-            var back = new Button("exit",
-                            new Rectangle(30, 640, 100, 50),
-                            new ButtonTexture(
-                                "button_normal",
-                                "button_over",
-                                "button_press"));
-            back.EventOnRelease += (s, a) => QuitGame();
-
-            _playerImage = new Image("tank",
-                            new Rectangle(140, 640, 50, 50));
-
-            _powerSlider = new Slider(0, GameLogic.Player.MaxPower, 0,
-                                      new Rectangle(1030, 640, 200, 50));
-            _angleSlider = new Slider(0, 180, 0,
-                                      new Rectangle(800, 640, 200, 50));
-
-            _angleSlider.EventOnChange += (s, a)
-                    => SetAngle(180 - _angleSlider.Value);
-
-            _powerSlider.EventOnChange += (s, a)
-                    => SetPower(_powerSlider.Value);
-
-            _ui.Add(fire);
-            _ui.Add(_switchButton);
-            _ui.Add(back);
-            _ui.Add(_powerSlider);
-            _ui.Add(_angleSlider);
-            _ui.Add(_playerImage);
-
-            UpdateAmmoLabel();
-            UpdateSliders();
-            UpdatePlayerImage();
-        }
-
         private void SetAngle(float angle)
         {
             if (_gameState.CurrentPlayer == null
@@ -195,6 +143,15 @@ namespace Tankettes
             _switchButton.Text = $"{ammo.Count}: {ammo.Type.Name}";
         }
 
+        private void MoveTank(int way)
+        {
+            if (_gameState.Players.Count == 0)
+                return;
+
+            var playerTank = _gameState.CurrentPlayer.Tank;
+            playerTank.Move(way * TankSpeed, 0);
+        }
+
         private void PlayerControls(KeyboardState keyboard)
         {
             if (_gameState.Players.Count == 0)
@@ -206,10 +163,10 @@ namespace Tankettes
                 return;
 
             if (keyboard.IsKeyDown(Keys.D))
-                playerTank.Move(TankSpeed, 0);
+                MoveTank(1);
 
             if (keyboard.IsKeyDown(Keys.A))
-                playerTank.Move(-TankSpeed, 0);
+                MoveTank(-1);
 
             if (keyboard.IsKeyDown(Keys.Right))
             {
@@ -282,6 +239,76 @@ namespace Tankettes
         public void Click(bool ended = false)
         {
             _ui.Click(ended);
+        }
+
+        private void InitUI()
+        {
+            var fire = new Button("",
+                            new Rectangle(565, 570, 150, 150),
+                            new ButtonTexture(
+                                "fire_button_normal",
+                                "fire_button_hover",
+                                "fire_button_press"));
+            fire.EventOnRelease += (s, a) => Shoot();
+
+            _switchButton = new Button("",
+                            new Rectangle(200, 640, 200, 50),
+                            new ButtonTexture(
+                                "button_normal",
+                                "button_over",
+                                "button_press"));
+            _switchButton.EventOnRelease += (s, a) => SwitchType();
+
+            var back = new Button("exit",
+                            new Rectangle(30, 640, 100, 50),
+                            new ButtonTexture(
+                                "button_normal",
+                                "button_over",
+                                "button_press"));
+            back.EventOnRelease += (s, a) => QuitGame();
+
+            var move_left = new Button("",
+                            new Rectangle(430, 640, 50, 50),
+                            new ButtonTexture(
+                                "left_arrow_normal",
+                                "left_arrow_hover",
+                                "left_arrow_press"));
+            move_left.EventOnHold += (s, a) => MoveTank(-1);
+
+            var move_right = new Button("",
+                            new Rectangle(490, 640, 50, 50),
+                            new ButtonTexture(
+                                "right_arrow_normal",
+                                "right_arrow_hover",
+                                "right_arrow_press"));
+            move_right.EventOnHold += (s, a) => MoveTank(1);
+
+            _playerImage = new Image("tank",
+                            new Rectangle(140, 640, 50, 50));
+
+            _powerSlider = new Slider(0, GameLogic.Player.MaxPower, 0,
+                                      new Rectangle(1030, 640, 200, 50));
+            _angleSlider = new Slider(0, 180, 0,
+                                      new Rectangle(800, 640, 200, 50));
+
+            _angleSlider.EventOnChange += (s, a)
+                    => SetAngle(180 - _angleSlider.Value);
+
+            _powerSlider.EventOnChange += (s, a)
+                    => SetPower(_powerSlider.Value);
+
+            _ui.Add(fire);
+            _ui.Add(_switchButton);
+            _ui.Add(back);
+            _ui.Add(_powerSlider);
+            _ui.Add(_angleSlider);
+            _ui.Add(_playerImage);
+            _ui.Add(move_left);
+            _ui.Add(move_right);
+
+            UpdateAmmoLabel();
+            UpdateSliders();
+            UpdatePlayerImage();
         }
     }
 }

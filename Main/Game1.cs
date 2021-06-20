@@ -64,6 +64,8 @@ namespace Tankettes
                 "button_normal", "button_over", "button_press",
                 "fire_button_normal", "fire_button_hover", "fire_button_press",
                 "slider", "slider_background",
+                "left_arrow_normal", "left_arrow_hover", "left_arrow_press",
+                "right_arrow_normal", "right_arrow_hover", "right_arrow_press",
                 
                 // gameplay
                 "terrain", "explosion",
@@ -71,7 +73,7 @@ namespace Tankettes
                 "victory",
 
                 // useless
-                "icon"
+                "icon",
             };
 
             _renderer.LoadAssets(Content, "font", toLoad);
