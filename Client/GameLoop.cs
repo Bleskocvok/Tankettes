@@ -40,6 +40,12 @@ namespace Tankettes
         public GameLoop(GameLogic.State state)
         {
             _gameState = state;
+
+            InitUI();
+        }
+
+        private void InitUI()
+        {
             var fire = new Button("", new Rectangle(565, 570, 150, 150),
                             new ButtonTexture(
                                 "fire_button_normal",
@@ -53,15 +59,33 @@ namespace Tankettes
                                 "button_over",
                                 "button_press"));
             _switchButton.EventOnRelease += (s, a) => SwitchType();
+
+            var back = new Button("exit", new Rectangle(30, 640, 100, 50),
+                            new ButtonTexture(
+                                "button_normal",
+                                "button_over",
+                                "button_press"));
+            back.EventOnRelease += (s, a) => Quit = true;
+
+            var powerSlider = new Slider(0, 100, 50, new Rectangle(800, 640, 200, 50));
+            var angleSlider = new Slider(0, 180, 0, new Rectangle(1030, 640, 200, 50));
+
             _ui.Add(fire);
             _ui.Add(_switchButton);
+            _ui.Add(back);
+            _ui.Add(powerSlider);
+            _ui.Add(angleSlider);
+
             UpdateAmmoLabel();
         }
 
         public void UpdateControls(KeyboardState keyboard)
         {
             if (keyboard.IsKeyDown(Keys.Escape))
+            {
                 Quit = true;
+                // TODO save progress
+            }
 
             if (!_waitForEquilibrium)
             {

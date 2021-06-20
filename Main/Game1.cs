@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using static Tankettes.GameLogic.Player;
+using Tankettes.GameLogic;
+using Tankettes.Shop;
 
 namespace Tankettes
 {
@@ -23,6 +25,8 @@ namespace Tankettes
         private const int BlockSize = 4;
 
         private GameLoop _currentGame = null;
+
+        private List<Player> _players;
 
         public Game1()
         {
@@ -46,14 +50,19 @@ namespace Tankettes
                                           new Rectangle(0, 100, 1200, 600),
                                           0, 4, 120, 1);
 
+                var shop = new List<IShopItem>
+                {
+                    new AmmoItem<NormalProjectile>{ Name = "Normal", Price = 500, BuyAmount = 5 },
+                };
+
                 var normal = new Shop.NormalProjectile();
 
                 var state = new GameLogic.State(
                         new Random().Next(),
                         new List<GameLogic.Player>
                         {
-                        new GameLogic.Player("Green", 1000, Color.Green, new AmmoCapacity(normal, 99)),
-                        new GameLogic.Player("Purple", 1000, Color.Purple, new AmmoCapacity(normal, 99)),
+                        new GameLogic.Player("Green", 1000, Color.LimeGreen, new AmmoCapacity(normal, 99)),
+                        new GameLogic.Player("Purple", 1000, Color.LightPink, new AmmoCapacity(normal, 99)),
                         new GameLogic.Player("Red", 1000, Color.Red, new AmmoCapacity(normal, 99)),
                         },
                         new Rectangle(0, 0, 1280, 600),
@@ -103,6 +112,7 @@ namespace Tankettes
             {
                 "button_normal", "button_over", "button_press",
                 "fire_button_normal", "fire_button_hover", "fire_button_press",
+                "slider", "slider_background",
                 "terrain", "explosion",
                 "tank", "cannon", "ball",
             };

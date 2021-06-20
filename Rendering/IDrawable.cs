@@ -9,16 +9,18 @@ namespace Tankettes
 {
     public interface IDrawable
     {
-        public string Texture { get; }
+        string Texture { get; }
 
-        public Color Color { get; }
+        Color Color { get; }
 
-        public Rectangle Rectangle { get; set; }
+        Rectangle Rectangle { get; set; }
 
-        public IEnumerable<IDrawable> Elements { get; }
+        IEnumerable<IDrawable> Elements { get; }
 
-        public Label Label { get; }
+        Label Label { get; }
 
-        public float Angle { get; set; }
+        float Angle { get; set; }
+
+        bool ChildrenRelative { get; }
     }
 }

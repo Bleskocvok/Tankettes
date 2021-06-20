@@ -24,5 +24,7 @@ namespace Tankettes
         public virtual Color Color { get; set; } = Color.White;
 
         public virtual float Angle { get; set; } = 0;
+
+        public virtual bool ChildrenRelative { get; protected set; } = true;
     }
 }

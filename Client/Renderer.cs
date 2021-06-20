@@ -35,6 +35,7 @@ namespace Tankettes
             Rectangle rect = new(obj.Rectangle.Location + origin,
                                  obj.Rectangle.Size);
 
+            // draw the current texture
             if (obj.Texture != null)
             {
                 float angle = -obj.Angle * MathF.PI / 180;
@@ -63,6 +64,20 @@ namespace Tankettes
                 rect.Offset(-correction);
             }
 
+            // recursively draw all its children
+            if (obj.Elements != null)
+            {
+                var moved = obj.ChildrenRelative
+                            ? origin + obj.Rectangle.Location
+                            : Point.Zero;
+
+                foreach (var el in obj.Elements)
+                {
+                    Draw(el, moved);
+                }
+            }
+
+            // finally draw the text label
             if (obj.Label != null)
             {
                 // nice lime green:
@@ -83,16 +98,6 @@ namespace Tankettes
                         SpriteEffects.None,         // 🡸 useless
                         1);                         // 🡸 some dumb layer
                                                     // depth thing
-            }
-
-            if (obj.Elements != null)
-            {
-                var moved = origin + obj.Rectangle.Location;
-
-                foreach (var el in obj.Elements)
-                {
-                    Draw(el, moved);
-                }
             }
         }
     }
