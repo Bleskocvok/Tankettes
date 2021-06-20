@@ -108,6 +108,7 @@ namespace Tankettes.GameLogic
                     .SelectedAmmo
                     .Type
                     .Shoot(pos.ToPoint(), vec, ref _projectiles);
+            CurrentPlayer.SpendAmmo();
         }
 
         public void NextPlayer()

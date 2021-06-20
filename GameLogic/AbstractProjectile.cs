@@ -30,6 +30,8 @@ namespace Tankettes.GameLogic
 
         public Vector2 Previous { get; protected set; }
 
+        public virtual string Name { get; }
+
         public AbstractProjectile()
         {
             Rectangle = new(0, 0, Size, Size);

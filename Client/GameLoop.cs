@@ -33,6 +33,8 @@ namespace Tankettes
 
         private UI.MenuFrame _ui = new();
 
+        private UI.Button _switchButton;
+
         public bool Quit { get; private set; }
 
         public GameLoop(GameLogic.State state)
@@ -44,7 +46,16 @@ namespace Tankettes
                                 "fire_button_hover",
                                 "fire_button_press"));
             fire.EventOnRelease += (s, a) => Shoot();
+
+            _switchButton = new Button("", new Rectangle(200, 640, 200, 50),
+                            new ButtonTexture(
+                                "button_normal",
+                                "button_over",
+                                "button_press"));
+            _switchButton.EventOnRelease += (s, a) => SwitchType();
             _ui.Add(fire);
+            _ui.Add(_switchButton);
+            UpdateAmmoLabel();
         }
 
         public void UpdateControls(KeyboardState keyboard)
@@ -58,6 +69,24 @@ namespace Tankettes
             }
 
             _previous = keyboard;
+        }
+
+        private void SwitchType()
+        {
+            if (_gameState.Players.Count == 0)
+                return;
+
+            _gameState.CurrentPlayer.NextAmmo();
+            UpdateAmmoLabel();
+        }
+
+        private void UpdateAmmoLabel()
+        {
+            if (_gameState.Players.Count == 0)
+                return;
+
+            var ammo = _gameState.CurrentPlayer.SelectedAmmo;
+            _switchButton.Text = $"{ammo.Count}: {ammo.Type.Name}";
         }
 
         private void PlayerControls(KeyboardState keyboard)
@@ -109,6 +138,7 @@ namespace Tankettes
             {
                 _waitForEquilibrium = false;
                 _gameState.NextPlayer();
+                UpdateAmmoLabel();
             }
 
             _ui.Update(gameTime);

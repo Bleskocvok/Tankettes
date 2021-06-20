@@ -9,6 +9,8 @@ namespace Tankettes.GameLogic
 {
     public interface IProjectile : IGameElement
     {
+        string Name { get; }
+
         float ExplosionRadius { get; }
 
         void Shoot(Point pos,

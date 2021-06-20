@@ -10,6 +10,8 @@ namespace Tankettes.Shop
 {
     public class NormalProjectile : GameLogic.AbstractProjectile
     {
+        public override string Name => "Normal";
+
         public override string Texture => "ball";
 
         public override float ExplosionRadius => 20f;
