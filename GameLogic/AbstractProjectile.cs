@@ -9,7 +9,7 @@ namespace Tankettes.GameLogic
 {
     public abstract class AbstractProjectile : AbstractDrawable, IProjectile
     {
-        private const float Drag = 0.013f;
+        private const float Drag = 0.009f;
         private const float Gravity = 0.0001f;
 
         public virtual float ExplosionRadius => 10f;

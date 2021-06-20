@@ -10,6 +10,8 @@ namespace Tankettes.UI
 {
     public class Slider : AbstractDrawable, IElementUI
     {
+        public event EventHandler EventOnChange;
+
         private int _value;
 
         public int Value
@@ -18,6 +20,7 @@ namespace Tankettes.UI
             set
             {
                 _value = value;
+                Label = new(_value.ToString());
                 Shift();
             }
         }
@@ -58,6 +61,8 @@ namespace Tankettes.UI
             _value = (int)(ratio * (_limit.max - _limit.min) + _limit.min);
 
             Label = new(Value.ToString());
+
+            EventOnChange?.Invoke(this, new EventArgs());
         }
 
         private void Shift()

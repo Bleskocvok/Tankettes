@@ -34,6 +34,8 @@ namespace Tankettes
         private UI.MenuFrame _ui = new();
 
         private UI.Button _switchButton;
+        private UI.Slider _powerSlider;
+        private UI.Slider _angleSlider;
 
         public bool Quit { get; private set; }
 
@@ -67,16 +69,24 @@ namespace Tankettes
                                 "button_press"));
             back.EventOnRelease += (s, a) => Quit = true;
 
-            var powerSlider = new Slider(0, 100, 50, new Rectangle(800, 640, 200, 50));
-            var angleSlider = new Slider(0, 180, 0, new Rectangle(1030, 640, 200, 50));
+            _powerSlider = new Slider(0, GameLogic.Player.MaxPower, 0, new Rectangle(800, 640, 200, 50));
+            _angleSlider = new Slider(0, 180, 0, new Rectangle(1030, 640, 200, 50));
+
+            _angleSlider.EventOnChange += (s, a)
+                    => _gameState.CurrentPlayer.Tank.CannonAngle
+                            = 180 - _angleSlider.Value;
+
+            _powerSlider.EventOnChange += (s, a)
+                    => _gameState.CurrentPlayer.Power = _powerSlider.Value;
 
             _ui.Add(fire);
             _ui.Add(_switchButton);
             _ui.Add(back);
-            _ui.Add(powerSlider);
-            _ui.Add(angleSlider);
+            _ui.Add(_powerSlider);
+            _ui.Add(_angleSlider);
 
             UpdateAmmoLabel();
+            UpdateSliders();
         }
 
         public void UpdateControls(KeyboardState keyboard)
@@ -102,6 +112,18 @@ namespace Tankettes
 
             _gameState.CurrentPlayer.NextAmmo();
             UpdateAmmoLabel();
+        }
+
+        private void UpdateSliders()
+        {
+            if (_gameState.Players.Count == 0)
+                return;
+
+            if (_gameState.CurrentPlayer.Tank == null)
+                return;
+
+            _powerSlider.Value = _gameState.CurrentPlayer.Power;
+            _angleSlider.Value = (int)(180f - _gameState.CurrentPlayer.Tank.CannonAngle);
         }
 
         private void UpdateAmmoLabel()
@@ -130,10 +152,16 @@ namespace Tankettes
                 playerTank.Move(-TankSpeed, 0);
 
             if (keyboard.IsKeyDown(Keys.Right))
+            {
                 playerTank.CannonAngle -= CannonAngleSpeed;
+                UpdateSliders();
+            }
 
             if (keyboard.IsKeyDown(Keys.Left))
+            {
                 playerTank.CannonAngle += CannonAngleSpeed;
+                UpdateSliders();
+            }
 
             if (_previous.IsKeyDown(Keys.Space)
                     && keyboard.IsKeyUp(Keys.Space))
@@ -163,6 +191,7 @@ namespace Tankettes
                 _waitForEquilibrium = false;
                 _gameState.NextPlayer();
                 UpdateAmmoLabel();
+                UpdateSliders();
             }
 
             _ui.Update(gameTime);
