@@ -10,21 +10,25 @@ namespace Tankettes.UI
 {
     class Window : AbstractDrawable, IMenuScreen
     {
+        public Dictionary<string, IMenuScreen> MenuScreens
+        {
+            get; private set;
+        } = new();
+
         public IMenuScreen Current
         {
-            get => _menuScreens[_current];
+            get => MenuScreens[_current];
         }
 
         public override ICollection<IDrawable> Elements => Current.Elements;
 
         public bool Quit { get; set; }
 
-        private Dictionary<string, IMenuScreen> _menuScreens = new ();
         private string _current;
 
         public void Add(string tag, IMenuScreen screen)
         {
-            _menuScreens.Add(tag, screen);
+            MenuScreens.Add(tag, screen);
 
             // the first added screen will be made current
             if (_current == null)
@@ -35,7 +39,7 @@ namespace Tankettes.UI
 
         public void AddReplace(string tag, IMenuScreen screen)
         {
-            if (_menuScreens.TryAdd(tag, screen))
+            if (MenuScreens.TryAdd(tag, screen))
             {
                 return;
             }
@@ -45,7 +49,7 @@ namespace Tankettes.UI
         }
 
         public void Remove(string tag)
-                => _menuScreens.Remove(tag);
+                => MenuScreens.Remove(tag);
 
         public void MakeCurrent(string tag)
                 => _current = tag;
