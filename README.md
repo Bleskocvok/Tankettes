@@ -3,6 +3,11 @@
 ![Icon](Icon.bmp)
 
 
+- [Repository](https://github.com/Bleskocvok/Tankettes)
+
+- [Additional info](https://youtu.be/dQw4w9WgXcQ)
+
+
 ## Notes:
 
 1. File usage:
